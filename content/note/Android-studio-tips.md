@@ -1,5 +1,5 @@
 +++
-title = "android studio"
+title = "Android studio tips"
 draft = false
 date = "2017-03-11T16:08:07+08:00"
 tags = [ "Android Studio", "tips" ]
