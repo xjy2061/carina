@@ -9,11 +9,11 @@
     <atom:link href="https://xjy2061.github.io/carina/tags/tips/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>android studio</title>
-      <link>https://xjy2061.github.io/carina/note/android-studio/</link>
+      <title>Android studio tips</title>
+      <link>https://xjy2061.github.io/carina/note/Android-studio-tips/</link>
       <pubDate>Sat, 11 Mar 2017 16:08:07 +0800</pubDate>
       
-      <guid>https://xjy2061.github.io/carina/note/android-studio/</guid>
+      <guid>https://xjy2061.github.io/carina/note/Android-studio-tips/</guid>
       <description>
 
 &lt;h4 id=&#34;share-module-between-projects&#34;&gt;Share module between projects&lt;/h4&gt;

@@ -9,11 +9,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Tips -- Carina</title>
+    <title>Android studio tips -- Carina</title>
 
-    
-    <link href="https://xjy2061.github.io/carina/tags/tips/index.xml" rel="alternate" type="application/rss+xml" title="Carina" />
-    <link href="https://xjy2061.github.io/carina/tags/tips/index.xml" rel="feed" type="application/rss+xml" title="Carina" />
     
 
     
@@ -71,40 +68,58 @@
 
 
     
-    <header class="intro-header" style="background-image: url('https://xjy2061.github.io/carina//img/home-bg.jpg')">
-     <div class="container">
-       <div class="row">
-         <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-           <div class="site-heading">
-             <h1>Tips</h1>
-             <hr class="small">
-             <span class="subheading"></span>
+    
+    <header class="intro-header" style="background-image: url('https://xjy2061.github.io/carina//img/note-single-bg.jpg')">
+    
+      <div class="container">
+        <div class="row">
+           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+             <div class="post-heading">
+               <h1>Android studio tips</h1>
+               <h2 class="subheading"></h2>
+               <span class="meta">
+                 
+Posted by <a href="#">xjy2061</a> on Sat, Mar 11, 2017
+<br />
+In <a href="/categories/note">Note</a>
+
+<br />
+Tags <a href="/tags/android-studio">android studio</a>, <a href="/tags/tips">tips</a>
+
+               </span>
+             </div>
            </div>
-         </div>
-       </div>
-     </div>
+        </div>
+      </div>
     </header>
 
     
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-          
-                             <div class="post-preview">
-                  <p class="post-meta"><a href="https://xjy2061.github.io/carina/note/Android-studio-tips/">Android studio tips</a> on Sat, Mar 11, 2017
-                    <br />
-                    In <a href="/categories/note">Note</a>
+    <article>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                  
 
-                    Tags <a href="/tags/android-studio">android studio</a>, <a href="/tags/tips">tips</a>
-                  </p>
-               </div>
+<h4 id="share-module-between-projects">Share module between projects</h4>
 
-          
-          
-    
+<p>Add this to <code>settings.gradle</code> file at the project root:</p>
+
+<pre><code>include ':libraryName' 
+project(':libraryName').projectDir=new File('/path/to/library')
+</code></pre>
+
+<p>where the path you specify in the second line is the path to the directory containing the library&rsquo;s <code>build.gradle</code> file. The path can be relative or absolute.</p>
+
+<h4 id="avoid-so-file-can-not-find-problem">Avoid so file can not find problem</h4>
+
+<p>If library&rsquo;s <strong>jniLibs</strong> contians <strong>armeabi-v7a</strong> folder, but main module&rsquo;s <strong>jniLibs</strong> contains not, the app will crash because of so file could not found.</p>
+
+                  
+
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
+    </article>
 
     <hr>
     
