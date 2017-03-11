@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tips on Carina</title>
+    <link>http://xjy2061.github.io/carina/tags/tips/index.xml</link>
+    <description>Recent content in Tips on Carina</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <atom:link href="http://xjy2061.github.io/carina/tags/tips/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>android studio</title>
+      <link>http://xjy2061.github.io/carina/note/android-studio/</link>
+      <pubDate>Sat, 11 Mar 2017 16:08:07 +0800</pubDate>
+      
+      <guid>http://xjy2061.github.io/carina/note/android-studio/</guid>
+      <description>
+
+&lt;h4 id=&#34;share-module-between-projects&#34;&gt;Share module between projects&lt;/h4&gt;
+
+&lt;p&gt;Add this to &lt;code&gt;settings.gradle&lt;/code&gt; file at the project root:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;include &#39;:libraryName&#39; 
+project(&#39;:libraryName&#39;).projectDir=new File(&#39;/path/to/library&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;where the path you specify in the second line is the path to the directory containing the library&amp;rsquo;s &lt;code&gt;build.gradle&lt;/code&gt; file. The path can be relative or absolute.&lt;/p&gt;
+
+&lt;h4 id=&#34;avoid-so-file-can-not-find-problem&#34;&gt;Avoid so file can not find problem&lt;/h4&gt;
+
+&lt;p&gt;If library&amp;rsquo;s &lt;strong&gt;jniLibs&lt;/strong&gt; contians &lt;strong&gt;armeabi-v7a&lt;/strong&gt; folder, but main module&amp;rsquo;s &lt;strong&gt;jniLibs&lt;/strong&gt; contains not, the app will crash because of so file could not found.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
