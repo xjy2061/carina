@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>https://xjy2061.github.io/carina/note/android-studio/</loc>
+    <lastmod>2017-03-11T16:08:07+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://xjy2061.github.io/carina/tags/android-studio/</loc>
+    <lastmod>2017-03-11T16:08:07+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://xjy2061.github.io/carina/</loc>
+    <lastmod>2017-03-11T16:08:07+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://xjy2061.github.io/carina/categories/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://xjy2061.github.io/carina/categories/note/</loc>
+    <lastmod>2017-03-11T16:08:07+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://xjy2061.github.io/carina/note/</loc>
+    <lastmod>2017-03-11T16:08:07+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://xjy2061.github.io/carina/tags/</loc>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://xjy2061.github.io/carina/tags/tips/</loc>
+    <lastmod>2017-03-11T16:08:07+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+</urlset>
