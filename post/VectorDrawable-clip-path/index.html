@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>VectorDrawable clip path -- Carina</title>
+
+    
+
+    
+    <link href="https://xjy2061.github.io/carina//css/bootstrap.min.css" rel="stylesheet">
+
+    
+    <link href="https://xjy2061.github.io/carina//css/clean-blog.min.css" rel="stylesheet">
+
+    
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    
+    
+    
+	
+	<link href="https://xjy2061.github.io/carina//css/prism.css" rel="stylesheet" />
+
+</head>
+
+<body>
+
+    
+    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+        <div class="container-fluid">
+            
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="https://xjy2061.github.io/carina/">Carina</a>
+            </div>
+
+                       
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    
+                    <li>
+                        <a href="/carina/">home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/carina/note/">Notes</a>
+                    </li>
+                    
+                  </ul>
+            </div>
+           
+
+        </div>
+        
+    </nav>
+
+
+    
+    
+    <header class="intro-header" style="background-image: url('https://xjy2061.github.io/carina//img/post-bg.jpg')">
+    
+      <div class="container">
+        <div class="row">
+           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+             <div class="post-heading">
+               <h1>VectorDrawable clip path</h1>
+               <h2 class="subheading"></h2>
+               <span class="meta">
+                 
+Posted by <a href="#">xjy2061</a> on Tue, Mar 14, 2017
+<br />
+In <a href="/categories/post">Post</a>
+
+<br />
+Tags <a href="/tags/android">android</a>, <a href="/tags/vectordrawable">vectordrawable</a>, <a href="/tags/clip-path">clip-path</a>
+
+               </span>
+             </div>
+           </div>
+        </div>
+      </div>
+    </header>
+
+    
+    <article>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                  
+
+<h1 id="function">Function</h1>
+
+<p><strong>clip path</strong>限制在画布上绘制的区域，在<strong>clip path</strong>所指定的区域外的位置不会被绘制。</p>
+
+<p>我们通过下面的心形图标来展示<strong>clip path</strong>的效果：</p>
+
+<pre><code class="language-xml">&lt;vector
+    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:width=&quot;56dp&quot;
+    android:height=&quot;56dp&quot;
+    android:viewportHeight=&quot;56&quot;
+    android:viewportWidth=&quot;56&quot;&gt;
+
+  &lt;path
+      android:fillColor=&quot;@android:color/black&quot;
+      android:pathData=&quot;M28,39 L26.405,37.5667575 C20.74,32.4713896 17,29.1089918 17,24.9945504 C17,21.6321526 19.6565,19 23.05,19 C24.964,19 26.801,19.8828338 28,21.2724796 C29.199,19.8828338 31.036,19 32.95,19 C36.3435,19 39,21.6321526 39,24.9945504 C39,29.1089918 35.26,32.4713896 29.595,37.5667575 L28,39 L28,39 Z&quot;/&gt;
+
+&lt;/vector&gt;
+</code></pre>
+
+<p><img src="heart.png" alt="heart" /><br />
+<font size=3><strong>Figure1</strong> 心形图标</font></p>
+
+<p>下面加入<code>&lt;clip-path&gt;</code>将绘制区域限制在[0, 0, 56, 28]的矩形区域内：</p>
+
+<pre><code class="language-xml">&lt;vector
+    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:width=&quot;56dp&quot;
+    android:height=&quot;56dp&quot;
+    android:viewportHeight=&quot;56&quot;
+    android:viewportWidth=&quot;56&quot;&gt;
+
+  &lt;clip-path
+      android:name=&quot;clip&quot;
+      android:pathData=&quot;M0 0 L56 0 L56 28 L0 28 Z&quot;/&gt;
+
+  &lt;path
+      android:fillColor=&quot;@android:color/black&quot;
+      android:pathData=&quot;M28,39 L26.405,37.5667575 C20.74,32.4713896 17,29.1089918 17,24.9945504 C17,21.6321526 19.6565,19 23.05,19 C24.964,19 26.801,19.8828338 28,21.2724796 C29.199,19.8828338 31.036,19 32.95,19 C36.3435,19 39,21.6321526 39,24.9945504 C39,29.1089918 35.26,32.4713896 29.595,37.5667575 L28,39 L28,39 Z&quot;/&gt;
+
+&lt;/vector&gt;
+</code></pre>
+
+<p><img src="clip-heart.png" alt="clip-heart" /><br />
+<font size=3><strong>Figure2</strong> clip后的心形图标</font></p>
+
+<h1 id="application">Application</h1>
+
+<p>可通过改变<code>&lt;clip-path&gt;</code>的<code>pathData</code>值来实现一些动画效果。</p>
+
+<p>下面通过<strong>clip path</strong>来实现填充心形图标的效果：</p>
+
+<pre><code class="language-xml">&lt;animated-vector
+  xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+  xmlns:aapt=&quot;http://schemas.android.com/aapt&quot;
+  android:drawable=&quot;@drawable/vd_trimclip_heart_full&quot;&gt;
+
+  &lt;target android:name=&quot;clip&quot;&gt;
+    &lt;aapt:attr name=&quot;android:animation&quot;&gt;
+      &lt;objectAnimator
+        android:duration=&quot;@android:integer/config_mediumAnimTime&quot;
+        android:interpolator=&quot;@android:interpolator/fast_out_slow_in&quot;
+        android:propertyName=&quot;pathData&quot;
+        android:valueFrom=&quot;M18 37 L38 37 L38 37 L18 37 Z&quot;
+        android:valueTo=&quot;M0 0 L56 0 L56 56 L0 56 Z&quot;
+        android:valueType=&quot;pathType&quot;/&gt;
+    &lt;/aapt:attr&gt;
+  &lt;/target&gt;
+
+&lt;/animated-vector&gt;
+</code></pre>
+
+<p>vd_trimclip_heart_full.xml：</p>
+
+<pre><code class="language-xml">&lt;vector
+    xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    android:width=&quot;56dp&quot;
+    android:height=&quot;56dp&quot;
+    android:tint=&quot;?attr/colorControlNormal&quot;
+    android:viewportHeight=&quot;56&quot;
+    android:viewportWidth=&quot;56&quot;&gt;
+
+  &lt;path
+      android:pathData=&quot;M28.7194825,38.2960196 L25.6688233,35.5523072 C21.6213379,31.793335 18.0159912,28.8906251 18.0159912,24.845337 C18.0159912,21.5882568 20.6305373,19.9651315 23.6337891,19.9651442 C24.9985352,19.96515 26.7993165,21.180664 28.643982,23.1297608&quot;
+      android:strokeColor=&quot;@android:color/white&quot;
+      android:strokeWidth=&quot;2&quot;/&gt;
+
+  &lt;path
+      android:pathData=&quot;M27.2310342,38.2944327 L30.7645263,35.2004395 C34.8336142,31.2354829 37.751709,29.1181308 38.0040283,25.0838624 C38.1681943,22.4590544 35.7730552,20.034668 33.3791503,20.034668 C30.4320068,20.034668 29.671997,21.0472412 27.2310342,23.1328126&quot;
+      android:strokeColor=&quot;@android:color/white&quot;
+      android:strokeWidth=&quot;2&quot;/&gt;
+
+  &lt;group android:name=&quot;filled&quot;&gt;
+    &lt;clip-path
+        android:name=&quot;clip&quot;
+        android:pathData=&quot;M18 37 L38 37 L38 37 L18 37 Z&quot;/&gt;
+    &lt;path
+        android:fillColor=&quot;@android:color/white&quot;
+        android:pathData=&quot;M28,39 L26.405,37.5667575 C20.74,32.4713896 17,29.1089918 17,24.9945504 C17,21.6321526 19.6565,19 23.05,19 C24.964,19 26.801,19.8828338 28,21.2724796 C29.199,19.8828338 31.036,19 32.95,19 C36.3435,19 39,21.6321526 39,24.9945504 C39,29.1089918 35.26,32.4713896 29.595,37.5667575 L28,39 L28,39 Z&quot;/&gt;
+  &lt;/group&gt;
+
+&lt;/vector&gt;
+</code></pre>
+
+<p><img src="fill-heart.gif" alt="fill-heart" /><br />
+<font size=3><strong>Figure3</strong> 心形图标填充效果</font></p>
+
+                  
+
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <hr>
+    
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                  <ul class="list-inline text-center">
+                    
+                      <li>
+                        <a href="mailto:xjy2061@gmail.com">
+                          <span class="fa-stack fa-lg">
+                            <i class="fa fa-circle fa-stack-2x"></i>
+                            <i class="fa fa-envelope-o fa-stack-1x fa-inverse"></i>
+                          </span>
+                        </a>
+                      </li>
+                    
+                    
+                    <li>
+                      <a href="https://github.com/xjy2061">
+                        <span class="fa-stack fa-lg">
+                          <i class="fa fa-circle fa-stack-2x"></i>
+                          <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                        </span>
+                      </a>
+                    </li>
+                    
+                  </ul>
+                  <p class="copyright text-muted"></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    
+    <script src="https://xjy2061.github.io/carina//js/jquery.min.js"></script>
+
+    
+    <script src="https://xjy2061.github.io/carina//js/bootstrap.min.js"></script>
+
+    
+    <script src="https://xjy2061.github.io/carina//js/clean-blog.js"></script>
+
+    
+	
+	<script src="https://xjy2061.github.io/carina//js/prism.js"></script>
+
+</body>
+
+</html>
+
