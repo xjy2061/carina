@@ -9,11 +9,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Post -- Carina</title>
+    <title>Create avd and start app with command line -- Carina</title>
 
-    
-    <link href="https://xjy2061.github.io/carina/categories/post/index.xml" rel="alternate" type="application/rss+xml" title="Carina" />
-    <link href="https://xjy2061.github.io/carina/categories/post/index.xml" rel="feed" type="application/rss+xml" title="Carina" />
     
 
     
@@ -73,50 +70,70 @@
 
 
     
-    <header class="intro-header" style="background-image: url('https://xjy2061.github.io/carina//img/home-bg.jpg')">
-     <div class="container">
-       <div class="row">
-         <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-           <div class="site-heading">
-             <h1>Post</h1>
-             <hr class="small">
-             <span class="subheading"></span>
+    
+    <header class="intro-header" style="background-image: url('https://xjy2061.github.io/carina//img/post-bg.jpg')">
+    
+      <div class="container">
+        <div class="row">
+           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+             <div class="post-heading">
+               <h1>Create avd and start app with command line</h1>
+               <h2 class="subheading"></h2>
+               <span class="meta">
+                 
+Posted by <a href="#">xjy2061</a> on Tue, Mar 21, 2017
+<br />
+In <a href="/categories/post">Post</a>
+
+<br />
+Tags <a href="/tags/android">android</a>, <a href="/tags/emulator">emulator</a>, <a href="/tags/command-line">command line</a>
+
+               </span>
+             </div>
            </div>
-         </div>
-       </div>
-     </div>
+        </div>
+      </div>
     </header>
 
     
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-          
-                             <div class="post-preview">
-                  <p class="post-meta"><a href="https://xjy2061.github.io/carina/post/Create-avd-and-start-app-with-command-line/">Create avd and start app with command line</a> on Tue, Mar 21, 2017
-                    <br />
-                    In <a href="/categories/post">Post</a>
+    <article>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                  
 
-                    Tags <a href="/tags/android">android</a>, <a href="/tags/emulator">emulator</a>, <a href="/tags/command-line">command line</a>
-                  </p>
-               </div>
+<h1 id="install-sdk-create-or-delete-avd">Install sdk, create or delete avd</h1>
 
-          
-                             <div class="post-preview">
-                  <p class="post-meta"><a href="https://xjy2061.github.io/carina/post/VectorDrawable-clip-path/">VectorDrawable clip path</a> on Tue, Mar 14, 2017
-                    <br />
-                    In <a href="/categories/post">Post</a>
+<pre><code class="language-shell">android list sdk -a
+android update sdk -a -u --filter [id1, id2]
 
-                    Tags <a href="/tags/android">android</a>, <a href="/tags/vectordrawable">vectordrawable</a>, <a href="/tags/clip-path">clip-path</a>
-                  </p>
-               </div>
+android list targets
+android create avd -n 4.1-x86 -t 1 -b x86 -c 512M
 
-          
-          
-    
+android delete avd -n 4.1-x86
+</code></pre>
+
+<h1 id="start-emulator-and-launch-app">Start emulator and launch app</h1>
+
+<pre><code class="language-shell">android list avd
+emulator64-x86 -avd 4.1-x86 -no-window -no-boot-anim -qemu -m 1024 -enable-kvm &amp;
+
+adb shell am start fm.xiami.main/fm.xiami.bmamba.activity.StartActivity
+
+adb forward tcp:11874 tcp:11873
+</code></pre>
+
+<p>on 64-bits machines you may need install ia32-libs to run adb:</p>
+
+<pre><code class="language-shell">sudo apt-get install ia32-libs
+</code></pre>
+
+                  
+
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
+    </article>
 
     <hr>
     
