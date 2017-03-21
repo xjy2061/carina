@@ -6,7 +6,7 @@ tags = [ "Android", "emulator", "command line" ]
 categories = [ "Post" ]
 +++
 
-# Install sdk, create or delete avd
+## Install sdk, create or delete avd
 
 ```shell
 android list sdk -a
@@ -18,7 +18,7 @@ android create avd -n 4.1-x86 -t 1 -b x86 -c 512M
 android delete avd -n 4.1-x86
 ```
 
-# Start emulator and launch app
+## Start emulator and launch app
 
 ```shell
 android list avd

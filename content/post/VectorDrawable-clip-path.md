@@ -6,7 +6,7 @@ tags = [ "Android", "VectorDrawable", "clip-path" ]
 categories = [ "Post" ]
 +++
 
-# Function
+## Function
 **clip path**限制在画布上绘制的区域，在**clip path**所指定的区域外的位置不会被绘制。
 
 我们通过下面的心形图标来展示**clip path**的效果：
@@ -49,7 +49,7 @@ categories = [ "Post" ]
 ![clip-heart](clip-heart.png)  
 <font size=3>**Figure2** clip后的心形图标</font>
 
-# Application
+## Application
 可通过改变`<clip-path>`的`pathData`值来实现一些动画效果。
 
 下面通过**clip path**来实现填充心形图标的效果：
