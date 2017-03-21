@@ -102,7 +102,7 @@ Tags <a href="/tags/android">android</a>, <a href="/tags/emulator">emulator</a>,
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                   
 
-<h1 id="install-sdk-create-or-delete-avd">Install sdk, create or delete avd</h1>
+<h2 id="install-sdk-create-or-delete-avd">Install sdk, create or delete avd</h2>
 
 <pre><code class="language-shell">android list sdk -a
 android update sdk -a -u --filter [id1, id2]
@@ -113,7 +113,7 @@ android create avd -n 4.1-x86 -t 1 -b x86 -c 512M
 android delete avd -n 4.1-x86
 </code></pre>
 
-<h1 id="start-emulator-and-launch-app">Start emulator and launch app</h1>
+<h2 id="start-emulator-and-launch-app">Start emulator and launch app</h2>
 
 <pre><code class="language-shell">android list avd
 emulator64-x86 -avd 4.1-x86 -no-window -no-boot-anim -qemu -m 1024 -enable-kvm &amp;

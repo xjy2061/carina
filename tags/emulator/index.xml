@@ -16,7 +16,7 @@
       <guid>https://xjy2061.github.io/carina/post/Create-avd-and-start-app-with-command-line/</guid>
       <description>
 
-&lt;h1 id=&#34;install-sdk-create-or-delete-avd&#34;&gt;Install sdk, create or delete avd&lt;/h1&gt;
+&lt;h2 id=&#34;install-sdk-create-or-delete-avd&#34;&gt;Install sdk, create or delete avd&lt;/h2&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-shell&#34;&gt;android list sdk -a
 android update sdk -a -u --filter [id1, id2]
@@ -27,7 +27,7 @@ android create avd -n 4.1-x86 -t 1 -b x86 -c 512M
 android delete avd -n 4.1-x86
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;h1 id=&#34;start-emulator-and-launch-app&#34;&gt;Start emulator and launch app&lt;/h1&gt;
+&lt;h2 id=&#34;start-emulator-and-launch-app&#34;&gt;Start emulator and launch app&lt;/h2&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-shell&#34;&gt;android list avd
 emulator64-x86 -avd 4.1-x86 -no-window -no-boot-anim -qemu -m 1024 -enable-kvm &amp;amp;

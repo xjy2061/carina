@@ -16,7 +16,7 @@
       <guid>https://xjy2061.github.io/carina/post/VectorDrawable-clip-path/</guid>
       <description>
 
-&lt;h1 id=&#34;function&#34;&gt;Function&lt;/h1&gt;
+&lt;h2 id=&#34;function&#34;&gt;Function&lt;/h2&gt;
 
 &lt;p&gt;&lt;strong&gt;clip path&lt;/strong&gt;限制在画布上绘制的区域，在&lt;strong&gt;clip path&lt;/strong&gt;所指定的区域外的位置不会被绘制。&lt;/p&gt;
 
@@ -62,7 +62,7 @@
 &lt;p&gt;&lt;img src=&#34;clip-heart.png&#34; alt=&#34;clip-heart&#34; /&gt;&lt;br /&gt;
 &lt;font size=3&gt;&lt;strong&gt;Figure2&lt;/strong&gt; clip后的心形图标&lt;/font&gt;&lt;/p&gt;
 
-&lt;h1 id=&#34;application&#34;&gt;Application&lt;/h1&gt;
+&lt;h2 id=&#34;application&#34;&gt;Application&lt;/h2&gt;
 
 &lt;p&gt;可通过改变&lt;code&gt;&amp;lt;clip-path&amp;gt;&lt;/code&gt;的&lt;code&gt;pathData&lt;/code&gt;值来实现一些动画效果。&lt;/p&gt;
 
