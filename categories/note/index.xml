@@ -9,6 +9,22 @@
     <atom:link href="https://xjy2061.github.io/carina/categories/note/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Android command line</title>
+      <link>https://xjy2061.github.io/carina/note/Android-command-line/</link>
+      <pubDate>Sat, 29 Apr 2017 18:54:21 +0800</pubDate>
+      
+      <guid>https://xjy2061.github.io/carina/note/Android-command-line/</guid>
+      <description>&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Show current tasks&lt;/strong&gt;&lt;br /&gt;
+adb shell dumpsys activity activites&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Show screen infos&lt;/strong&gt;&lt;br /&gt;
+adb shell dumpsys window&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Android tips</title>
       <link>https://xjy2061.github.io/carina/note/Android-tips/</link>
       <pubDate>Sat, 29 Apr 2017 18:08:07 +0800</pubDate>
