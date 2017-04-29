@@ -9,6 +9,38 @@
     <atom:link href="https://xjy2061.github.io/carina/categories/note/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Android tips</title>
+      <link>https://xjy2061.github.io/carina/note/Android-tips/</link>
+      <pubDate>Sat, 29 Apr 2017 18:08:07 +0800</pubDate>
+      
+      <guid>https://xjy2061.github.io/carina/note/Android-tips/</guid>
+      <description>&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;如果要在低版本系统上使用高版本系统才加入的类，可以在app中加入同名类，在高版本系统上安装时这个同名类会删除，还是使用系统的类，在低版本系统则使用在app中加入的类。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;在不同的&lt;code&gt;PendingIntent&lt;/code&gt;的&lt;code&gt;Intent&lt;/code&gt;中设置extra，在处理&lt;code&gt;Intent&lt;/code&gt;的地方获取的extra始终相同，可以通过设置不同RequestCode来区分不同的&lt;code&gt;PendingIntent&lt;/code&gt;。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;对于replace fragment，通过代码和通过配置文件加入最初的fragment这两种方式之间是有区别的，当通过代码的加入最初的fragment时，replace一个新的fragment后再回退，会调最初的fragment的onCreateView方法，说明replace时最初的fragment被销毁了，而通过配置文件的方法则不会调用onCreateView方法。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;在xml中加入fragment时键盘会自动弹出，通过代码加入时不会。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;code&gt;AsyncTask&lt;/code&gt;在3.0以前是并行执行的，3.0及以后顺序执行的，&lt;code&gt;AsyncTask&lt;/code&gt;是通过静态的&lt;code&gt;Handler&lt;/code&gt;成员变量将结果post到主线程中执行的，所以要确保加载&lt;code&gt;AsyncTask&lt;/code&gt;类是在主线程中执行的，在4.1及以后系统已经确保的这一点。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;如果自己decode ninepatch图片，要先compile ninepatch图片。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;android ListView Adapter&amp;rsquo;s getView method sometimes provide a wrong type convertView. &lt;a href=&#34;http://stackoverflow.com/questions/12018997/why-does-getview-return-wrong-convertview-objects-on-separatedlistadapter&#34;&gt;stackoverflow&lt;/a&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;市场解锁、gaeproxy等软件会修改运营商信息。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;cookie里包含有特殊字符会导致请求失败。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Bitmap.createBitmap在低内存时在有些手机上可能返回null，而不是抛OutofMemoryError。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;对于apk压缩包的操作应使用android自带的aapt，避免直接使用zip，直接使用zip会将apk里面的raw资源压缩，导致有些rom下读取raw文件失败。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Android studio tips</title>
       <link>https://xjy2061.github.io/carina/note/Android-studio-tips/</link>
       <pubDate>Sat, 11 Mar 2017 16:08:07 +0800</pubDate>
@@ -16,7 +48,7 @@
       <guid>https://xjy2061.github.io/carina/note/Android-studio-tips/</guid>
       <description>
 
-&lt;h4 id=&#34;share-module-between-projects&#34;&gt;Share module between projects&lt;/h4&gt;
+&lt;h2 id=&#34;share-module-between-projects&#34;&gt;Share module between projects&lt;/h2&gt;
 
 &lt;p&gt;Add this to &lt;code&gt;settings.gradle&lt;/code&gt; file at the project root:&lt;/p&gt;
 
@@ -26,7 +58,7 @@ project(&#39;:libraryName&#39;).projectDir=new File(&#39;/path/to/library&#39;)
 
 &lt;p&gt;where the path you specify in the second line is the path to the directory containing the library&amp;rsquo;s &lt;code&gt;build.gradle&lt;/code&gt; file. The path can be relative or absolute.&lt;/p&gt;
 
-&lt;h4 id=&#34;avoid-so-file-can-not-find-problem&#34;&gt;Avoid so file can not find problem&lt;/h4&gt;
+&lt;h2 id=&#34;avoid-so-file-can-not-find-problem&#34;&gt;Avoid so file can not find problem&lt;/h2&gt;
 
 &lt;p&gt;If library&amp;rsquo;s &lt;strong&gt;jniLibs&lt;/strong&gt; contians &lt;strong&gt;armeabi-v7a&lt;/strong&gt; folder, but main module&amp;rsquo;s &lt;strong&gt;jniLibs&lt;/strong&gt; contains not, the app will crash because of so file could not found.&lt;/p&gt;
 </description>

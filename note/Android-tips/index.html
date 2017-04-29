@@ -9,11 +9,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Android -- Carina</title>
+    <title>Android tips -- Carina</title>
 
-    
-    <link href="https://xjy2061.github.io/carina/tags/android/index.xml" rel="alternate" type="application/rss+xml" title="Carina" />
-    <link href="https://xjy2061.github.io/carina/tags/android/index.xml" rel="feed" type="application/rss+xml" title="Carina" />
     
 
     
@@ -73,60 +70,66 @@
 
 
     
-    <header class="intro-header" style="background-image: url('https://xjy2061.github.io/carina//img/home-bg.jpg')">
-     <div class="container">
-       <div class="row">
-         <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-           <div class="site-heading">
-             <h1>Android</h1>
-             <hr class="small">
-             <span class="subheading"></span>
+    
+    <header class="intro-header" style="background-image: url('https://xjy2061.github.io/carina//img/note-single-bg.jpg')">
+    
+      <div class="container">
+        <div class="row">
+           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+             <div class="post-heading">
+               <h1>Android tips</h1>
+               <h2 class="subheading"></h2>
+               <span class="meta">
+                 
+Posted by <a href="#">xjy2061</a> on Sat, Apr 29, 2017
+<br />
+In <a href="/categories/note">Note</a>
+
+<br />
+Tags <a href="/tags/android">android</a>, <a href="/tags/tips">tips</a>
+
+               </span>
+             </div>
            </div>
-         </div>
-       </div>
-     </div>
+        </div>
+      </div>
     </header>
 
     
-    <div class="container">
-      <div class="row">
-        <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-          
-                             <div class="post-preview">
-                  <p class="post-meta"><a href="https://xjy2061.github.io/carina/note/Android-tips/">Android tips</a> on Sat, Apr 29, 2017
-                    <br />
-                    In <a href="/categories/note">Note</a>
+    <article>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                  <ul>
+<li><p>如果要在低版本系统上使用高版本系统才加入的类，可以在app中加入同名类，在高版本系统上安装时这个同名类会删除，还是使用系统的类，在低版本系统则使用在app中加入的类。</p></li>
 
-                    Tags <a href="/tags/android">android</a>, <a href="/tags/tips">tips</a>
-                  </p>
-               </div>
+<li><p>在不同的<code>PendingIntent</code>的<code>Intent</code>中设置extra，在处理<code>Intent</code>的地方获取的extra始终相同，可以通过设置不同RequestCode来区分不同的<code>PendingIntent</code>。</p></li>
 
-          
-                             <div class="post-preview">
-                  <p class="post-meta"><a href="https://xjy2061.github.io/carina/post/Create-avd-and-start-app-with-command-line/">Create avd and start app with command line</a> on Tue, Mar 21, 2017
-                    <br />
-                    In <a href="/categories/post">Post</a>
+<li><p>对于replace fragment，通过代码和通过配置文件加入最初的fragment这两种方式之间是有区别的，当通过代码的加入最初的fragment时，replace一个新的fragment后再回退，会调最初的fragment的onCreateView方法，说明replace时最初的fragment被销毁了，而通过配置文件的方法则不会调用onCreateView方法。</p></li>
 
-                    Tags <a href="/tags/android">android</a>, <a href="/tags/emulator">emulator</a>, <a href="/tags/command-line">command line</a>
-                  </p>
-               </div>
+<li><p>在xml中加入fragment时键盘会自动弹出，通过代码加入时不会。</p></li>
 
-          
-                             <div class="post-preview">
-                  <p class="post-meta"><a href="https://xjy2061.github.io/carina/post/VectorDrawable-clip-path/">VectorDrawable clip path</a> on Tue, Mar 14, 2017
-                    <br />
-                    In <a href="/categories/post">Post</a>
+<li><p><code>AsyncTask</code>在3.0以前是并行执行的，3.0及以后顺序执行的，<code>AsyncTask</code>是通过静态的<code>Handler</code>成员变量将结果post到主线程中执行的，所以要确保加载<code>AsyncTask</code>类是在主线程中执行的，在4.1及以后系统已经确保的这一点。</p></li>
 
-                    Tags <a href="/tags/android">android</a>, <a href="/tags/vectordrawable">vectordrawable</a>, <a href="/tags/clip-path">clip-path</a>
-                  </p>
-               </div>
+<li><p>如果自己decode ninepatch图片，要先compile ninepatch图片。</p></li>
 
-          
-          
-    
+<li><p>android ListView Adapter&rsquo;s getView method sometimes provide a wrong type convertView. <a href="http://stackoverflow.com/questions/12018997/why-does-getview-return-wrong-convertview-objects-on-separatedlistadapter">stackoverflow</a></p></li>
+
+<li><p>市场解锁、gaeproxy等软件会修改运营商信息。</p></li>
+
+<li><p>cookie里包含有特殊字符会导致请求失败。</p></li>
+
+<li><p>Bitmap.createBitmap在低内存时在有些手机上可能返回null，而不是抛OutofMemoryError。</p></li>
+
+<li><p>对于apk压缩包的操作应使用android自带的aapt，避免直接使用zip，直接使用zip会将apk里面的raw资源压缩，导致有些rom下读取raw文件失败。</p></li>
+</ul>
+
+                  
+
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
+    </article>
 
     <hr>
     

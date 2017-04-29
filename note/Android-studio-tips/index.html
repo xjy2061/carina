@@ -102,7 +102,7 @@ Tags <a href="/tags/android-studio">android studio</a>, <a href="/tags/tips">tip
                 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
                   
 
-<h4 id="share-module-between-projects">Share module between projects</h4>
+<h2 id="share-module-between-projects">Share module between projects</h2>
 
 <p>Add this to <code>settings.gradle</code> file at the project root:</p>
 
@@ -112,7 +112,7 @@ project(':libraryName').projectDir=new File('/path/to/library')
 
 <p>where the path you specify in the second line is the path to the directory containing the library&rsquo;s <code>build.gradle</code> file. The path can be relative or absolute.</p>
 
-<h4 id="avoid-so-file-can-not-find-problem">Avoid so file can not find problem</h4>
+<h2 id="avoid-so-file-can-not-find-problem">Avoid so file can not find problem</h2>
 
 <p>If library&rsquo;s <strong>jniLibs</strong> contians <strong>armeabi-v7a</strong> folder, but main module&rsquo;s <strong>jniLibs</strong> contains not, the app will crash because of so file could not found.</p>
 
