@@ -116,6 +116,10 @@ project(':libraryName').projectDir=new File('/path/to/library')
 
 <p>If library&rsquo;s <strong>jniLibs</strong> contians <strong>armeabi-v7a</strong> folder, but main module&rsquo;s <strong>jniLibs</strong> contains not, the app will crash because of so file could not found.</p>
 
+<h2 id="problems-after-change-sdk-location">Problems after change sdk location</h2>
+
+<p>After change <strong>sdk loaction</strong>, android studio always fetching documentation from network even you have downloaded the documentation with sdk tools, and no longer auto attach the support library source code. To fix these problems, you should close the project and reopen it(not use Open Recent).</p>
+
                   
 
                 </div>
