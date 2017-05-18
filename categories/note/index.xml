@@ -77,6 +77,10 @@ project(&#39;:libraryName&#39;).projectDir=new File(&#39;/path/to/library&#39;)
 &lt;h2 id=&#34;avoid-so-file-can-not-find-problem&#34;&gt;Avoid so file can not find problem&lt;/h2&gt;
 
 &lt;p&gt;If library&amp;rsquo;s &lt;strong&gt;jniLibs&lt;/strong&gt; contians &lt;strong&gt;armeabi-v7a&lt;/strong&gt; folder, but main module&amp;rsquo;s &lt;strong&gt;jniLibs&lt;/strong&gt; contains not, the app will crash because of so file could not found.&lt;/p&gt;
+
+&lt;h2 id=&#34;problems-after-change-sdk-location&#34;&gt;Problems after change sdk location&lt;/h2&gt;
+
+&lt;p&gt;After change &lt;strong&gt;sdk loaction&lt;/strong&gt;, android studio always fetching documentation from network even you have downloaded the documentation with sdk tools, and no longer auto attach the support library source code. To fix these problems, you should close the project and reopen it(not use Open Recent).&lt;/p&gt;
 </description>
     </item>
     
