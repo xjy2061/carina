@@ -11,3 +11,5 @@ adb shell dumpsys activity activites
 
 * **Show screen infos**  
 adb shell dumpsys window
+
+adb shell dumpsys gxinfo com.your.package.name
