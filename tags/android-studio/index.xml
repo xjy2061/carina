@@ -9,6 +9,166 @@
     <atom:link href="https://xjy2061.github.io/carina/tags/android-studio/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Android Studio 3.0 Device File Explorer &amp; Fonts</title>
+      <link>https://xjy2061.github.io/carina/post/Android%20Studio%203.0%20Device%20File%20Explorer%20&amp;%20Fonts/</link>
+      <pubDate>Sun, 09 Jul 2017 15:13:05 +0800</pubDate>
+      
+      <guid>https://xjy2061.github.io/carina/post/Android%20Studio%203.0%20Device%20File%20Explorer%20&amp;%20Fonts/</guid>
+      <description>
+
+&lt;h2 id=&#34;device-file-explorer&#34;&gt;Device File Explorer&lt;/h2&gt;
+
+&lt;p&gt;使用设备的文件系统，可按如下的操作方式：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;点击&lt;strong&gt;View &amp;gt; Tool Windows &amp;gt; Device File Explorer&lt;/strong&gt;或者点击右下角位于工具窗口条中的&lt;strong&gt;Device File Explorer&lt;/strong&gt;按钮来打开Device File Explorer。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;从上方的下拉列表中选择设备。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;在文件浏览窗口中操作设备文件。鼠标右键点击文件或目录来创建一个新文件或目录，保存现在的文件或目录到电脑中，上传、删除或同步文件。鼠标双击文件可以在Android Studio中打开文件。&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：Android Studio 将用 Device File Explorer 打开的文件保存在工程外的临时目录中，如果在 Device File Explorer 中修改文件，并想把修改保存到设备中，需要手动将修改的文件上传到设备中。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;img src=&#34;device-file-explorer.png&#34; alt=&#34;Device File Explorer&#34; /&gt;&lt;br /&gt;
+&lt;strong&gt;Figure1&lt;/strong&gt; Device File Explorer窗口&lt;/p&gt;
+
+&lt;p&gt;当浏览设备文件时，以下2个目录是经常访问的：&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;data/data/app_name/&lt;/strong&gt;：包含存储于内部存储空间的应用数据文件&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;sdcard/&lt;/strong&gt;：包含存储于外部存储空间的用户文件&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：不是所有的文件都在Device File Explorer中可见。例如在&lt;strong&gt;data/data/&lt;/strong&gt;目录中，非debuggable应用的文件是不能展开的。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&#34;xml-fonts-downloadable-fonts&#34;&gt;XML Fonts &amp;amp; Downloadable Fonts&lt;/h2&gt;
+
+&lt;p&gt;Android O 引入了XML字体新特性，可以将字体作为资源使用。&lt;/p&gt;
+
+&lt;h3 id=&#34;xml-fonts&#34;&gt;XML Fonts&lt;/h3&gt;
+
+&lt;p&gt;Android O 可以通过将字体文件加入&lt;strong&gt;res/font&lt;/strong&gt;目录来将字体作为资源使用。这些字体会被编译到R文件中，并在 Android Studio 中可用。可以通过新的资源类型&lt;strong&gt;font&lt;/strong&gt;来访问字体资源，例如用&lt;code&gt;@font/myfont&lt;/code&gt;或者&lt;code&gt;R.font.myfont&lt;/code&gt;来访问一个字体资源。&lt;/p&gt;
+
+&lt;p&gt;在 Android Studio 中可以通过执行以下步骤来字体资源：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;鼠标右键点击&lt;strong&gt;res&lt;/strong&gt;目录，选择&lt;strong&gt;New &amp;gt; Android Resource Directory&lt;/strong&gt;，打开&lt;strong&gt;New Resource Directory&lt;/strong&gt;窗口。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;在&lt;strong&gt;Resource type&lt;/strong&gt;列表里选择&lt;strong&gt;font&lt;/strong&gt;，然后点击&lt;strong&gt;OK&lt;/strong&gt;。&lt;br /&gt;
+&lt;img src=&#34;add-font-directory.png&#34; alt=&#34;Add font directory&#34; /&gt;&lt;br /&gt;
+&lt;strong&gt;Figure2&lt;/strong&gt; 添加字体目录&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;添加字体文件到&lt;strong&gt;font&lt;/strong&gt;目录中。&lt;br /&gt;
+&lt;img src=&#34;add-font-files.png&#34; alt=&#34;Add font files&#34; /&gt;&lt;br /&gt;
+&lt;strong&gt;Figure3&lt;/strong&gt; 添加字体文件到资源目录&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;双击字体文件预览字体。&lt;br /&gt;
+&lt;img src=&#34;preview-font-file.png&#34; alt=&#34;Preview font file&#34; /&gt;&lt;br /&gt;
+&lt;strong&gt;Figure4&lt;/strong&gt; 预览字体文件&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&#34;创建-font-family&#34;&gt;创建 font family&lt;/h4&gt;
+
+&lt;p&gt;font family 是一个包含多个字体文件以及它们的style和weight信息的xml文件，font family 可以作为一个单元来访问。&lt;/p&gt;
+
+&lt;p&gt;通过以下步骤在 Android Studio 中创建一个 font family：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;鼠标右键点击&lt;strong&gt;font&lt;/strong&gt;目录，选择&lt;strong&gt;New &amp;gt; Font resource file&lt;/strong&gt;，打开&lt;strong&gt;New Resource File&lt;/strong&gt;窗口。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;输入文件名，然后点击&lt;strong&gt;OK&lt;/strong&gt;，一个新的字体资源xml文件将被打开在编辑器中。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;给&lt;code&gt;&amp;lt;font&amp;gt;&lt;/code&gt;元素加入字体文件、style和weight等属性。下面是添加了字体相关属性后的字体资源xml的例子：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-xml&#34;&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;utf-8&amp;quot;?&amp;gt;
+&amp;lt;font-family xmlns:android=&amp;quot;http://schemas.android.com/apk/res/android&amp;quot;&amp;gt;
+&amp;lt;font
+    android:fontStyle=&amp;quot;normal&amp;quot;
+    android:fontWeight=&amp;quot;400&amp;quot;
+    android:font=&amp;quot;@font/lobster_regular&amp;quot; /&amp;gt;
+&amp;lt;font
+    android:fontStyle=&amp;quot;italic&amp;quot;
+    android:fontWeight=&amp;quot;400&amp;quot;
+    android:font=&amp;quot;@font/lobster_italic&amp;quot; /&amp;gt;
+&amp;lt;/font-family&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h4 id=&#34;在-xml-layouts-中使用字体&#34;&gt;在 xml layouts 中使用字体&lt;/h4&gt;
+
+&lt;p&gt;可以通过&lt;code&gt;fontFamily&lt;/code&gt;属性将单个字体文件或 font family 中的字体绑定到&lt;code&gt;TextView&lt;/code&gt;。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：当使用 font family 时，&lt;code&gt;TextView&lt;/code&gt;将自动根据需要从 font family 中选择字体文件。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;给&lt;code&gt;TextView&lt;/code&gt;设置字体可以用如下任一方式：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;打开 layout xml 文件，给&lt;code&gt;fontFamily&lt;/code&gt;属性设置字体文件。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-xml&#34;&gt;&amp;lt;TextView
+    android:layout_width=&amp;quot;wrap_content&amp;quot;
+    android:layout_height=&amp;quot;wrap_content&amp;quot;
+    android:fontFamily=&amp;quot;@font/lobster&amp;quot;/&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;在 layout 文件的 design 编辑器中选择&lt;code&gt;TextView&lt;/code&gt;打开属性窗口，展开&lt;code&gt;textAppearance&lt;/code&gt;属性，从&lt;code&gt;fontFamily&lt;/code&gt;列表中选择字体。&lt;br /&gt;
+&lt;img src=&#34;select-font.png&#34; alt=&#34;Select font&#34; /&gt;&lt;br /&gt;
+&lt;strong&gt;Figure5&lt;/strong&gt; 在属性窗口中选择字体&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&#34;downloadable-fonts&#34;&gt;Downloadable fonts&lt;/h3&gt;
+
+&lt;p&gt;Android O 和 Android Support Library 26 引入了从&lt;code&gt;provider&lt;/code&gt;请求字体的api，从而不需要集成字体文件到apk或者让apk下载字体文件。&lt;/p&gt;
+
+&lt;p&gt;使用 Downloadable Fonts 特性三种方式：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;通过 Android Studio 和 Google Play Service&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;通过编码实现&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;通过 support library&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4 id=&#34;通过-android-studio-和-google-play-services-使用-downloadable-fonts&#34;&gt;通过 Android Studio 和 Google Play Services 使用 Downloadable Fonts&lt;/h4&gt;
+
+&lt;p&gt;在 Android Studio 3.0 中，可以使用 Google Play Services 的 font provider 来给应用设置下载字体。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：使用 Google Fonts Provider 要求设备中的 Google Play Services 版本大于等于11。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;在&lt;strong&gt;Layout Editor&lt;/strong&gt;中选择一个&lt;code&gt;TextView&lt;/code&gt;，在打开的属性窗口中选择&lt;strong&gt;fontFamily &amp;gt; More Fonts&lt;/strong&gt;，打开&lt;strong&gt;Resources&lt;/strong&gt;窗口。&lt;br /&gt;
+&lt;img src=&#34;using-layout-editor.png&#34; alt=&#34;Using layout editor&#34; /&gt;&lt;br /&gt;
+&lt;strong&gt;Figure6&lt;/strong&gt; 使用 layout editor&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;在&lt;strong&gt;Source&lt;/strong&gt;下拉列表中选择&lt;strong&gt;Google Fonts&lt;/strong&gt;。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;在&lt;strong&gt;Fonts&lt;/strong&gt;列表中选择一个字体。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;选择&lt;strong&gt;Create downloadable font&lt;/strong&gt;并点击&lt;strong&gt;OK&lt;/strong&gt;。&lt;br /&gt;
+&lt;img src=&#34;select-font-from-resources-window.png&#34; alt=&#34;Select font from resources window&#34; /&gt;&lt;br /&gt;
+&lt;strong&gt;Figure7&lt;/strong&gt; 从 Resources 窗口中选择字体&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Android Studio 会自动生成相应的 xml 文件。&lt;br /&gt;
+&lt;img src=&#34;font-file.png&#34; alt=&#34;Font file&#34; /&gt;&lt;br /&gt;
+&lt;strong&gt;Figure8&lt;/strong&gt; 生成的字体 xml 文件&lt;/p&gt;
+
+&lt;h4 id=&#34;其他使用-downloadable-fonts-的方式&#34;&gt;其他使用 Downloadable Fonts 的方式&lt;/h4&gt;
+
+&lt;p&gt;通过编码实现和通过 support library 的方式不涉及 Android Studio 本身，可参考链接：&lt;a href=&#34;https://developer.android.com/preview/features/downloadable-fonts.html&#34;&gt;Downloadable Fonts&lt;/a&gt;。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Android studio tips</title>
       <link>https://xjy2061.github.io/carina/note/Android-studio-tips/</link>
       <pubDate>Sat, 11 Mar 2017 16:08:07 +0800</pubDate>
