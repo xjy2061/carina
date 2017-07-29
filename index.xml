@@ -398,6 +398,19 @@ project(&#39;:libraryName&#39;).projectDir=new File(&#39;/path/to/library&#39;)
 &lt;h2 id=&#34;problems-after-change-sdk-location&#34;&gt;Problems after change sdk location&lt;/h2&gt;
 
 &lt;p&gt;After change &lt;strong&gt;sdk loaction&lt;/strong&gt;, android studio always fetching documentation from network even you have downloaded the documentation with sdk tools, and no longer auto attach the support library source code. To fix these problems, you should close the project and reopen it(not use Open Recent).&lt;/p&gt;
+
+&lt;h2 id=&#34;incompatible-type-error-occurs-when-compile&#34;&gt;Incompatible type error occurs when compile&lt;/h2&gt;
+
+&lt;p&gt;The compiler error output make no sense(An incompatible type error occurs at an import class line), maybe the real position of error is in &lt;code&gt;BuildConfig&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&#34;define-string-buildconfig-field-in-gradle&#34;&gt;Define &lt;code&gt;String&lt;/code&gt; BuildConfig field in gradle&lt;/h2&gt;
+
+&lt;p&gt;When define a &lt;code&gt;String&lt;/code&gt; BuildConfig field in build.gradle file, make sure the field value is surrounded with quote, even the gradle variable type is &lt;code&gt;String&lt;/code&gt;, otherwise the field type will wrong.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-dsl&#34;&gt;def fieldValue = &amp;quot;value&amp;quot;
+...
+buildConfigField &amp;quot;String&amp;quot;, &amp;quot;FIELD_NAME&amp;quot;, &amp;quot;\&amp;quot;${fieldValue}\&amp;quot;&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
 </description>
     </item>
     
