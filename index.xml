@@ -181,9 +181,10 @@ adb shell dumpsys activity activites&lt;/p&gt;&lt;/li&gt;
 
 &lt;li&gt;&lt;p&gt;&lt;strong&gt;Show screen infos&lt;/strong&gt;&lt;br /&gt;
 adb shell dumpsys window&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
 
-&lt;p&gt;adb shell dumpsys gxinfo com.your.package.name&lt;/p&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Show gfxinfo&lt;/strong&gt;&lt;br /&gt;
+adb shell dumpsys gfxinfo &amp;lt;PACKAGE_NAME&amp;gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
 </description>
     </item>
     
