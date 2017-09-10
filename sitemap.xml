@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://xjy2061.github.io/carina/post/Android-memory-leak/</loc>
+    <lastmod>2017-09-10T20:09:00+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://xjy2061.github.io/carina/post/Android%20Studio%203.0%20Device%20File%20Explorer%20&amp;%20Fonts/</loc>
     <lastmod>2017-07-09T15:13:05+08:00</lastmod>
   </url>
@@ -33,7 +38,7 @@
   
   <url>
     <loc>https://xjy2061.github.io/carina/tags/android/</loc>
-    <lastmod>2017-04-29T18:54:21+08:00</lastmod>
+    <lastmod>2017-09-10T20:09:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -45,7 +50,7 @@
   
   <url>
     <loc>https://xjy2061.github.io/carina/</loc>
-    <lastmod>2017-07-09T15:13:05+08:00</lastmod>
+    <lastmod>2017-09-10T20:09:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -73,6 +78,12 @@
   </url>
   
   <url>
+    <loc>https://xjy2061.github.io/carina/tags/memory-leak/</loc>
+    <lastmod>2017-09-10T20:09:00+08:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://xjy2061.github.io/carina/categories/note/</loc>
     <lastmod>2017-04-29T18:54:21+08:00</lastmod>
     <priority>0</priority>
@@ -86,13 +97,13 @@
   
   <url>
     <loc>https://xjy2061.github.io/carina/categories/post/</loc>
-    <lastmod>2017-07-09T15:13:05+08:00</lastmod>
+    <lastmod>2017-09-10T20:09:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://xjy2061.github.io/carina/post/</loc>
-    <lastmod>2017-07-09T15:13:05+08:00</lastmod>
+    <lastmod>2017-09-10T20:09:00+08:00</lastmod>
     <priority>0</priority>
   </url>
   

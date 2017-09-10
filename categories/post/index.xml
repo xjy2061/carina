@@ -9,6 +9,159 @@
     <atom:link href="https://xjy2061.github.io/carina/categories/post/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Android memory leak</title>
+      <link>https://xjy2061.github.io/carina/post/Android-memory-leak/</link>
+      <pubDate>Sun, 10 Sep 2017 20:09:00 +0800</pubDate>
+      
+      <guid>https://xjy2061.github.io/carina/post/Android-memory-leak/</guid>
+      <description>
+
+&lt;h2 id=&#34;leak-because-of-system-bug&#34;&gt;Leak because of system bug&lt;/h2&gt;
+
+&lt;h3 id=&#34;phonestatelistener-leak&#34;&gt;&lt;code&gt;PhoneStateListener&lt;/code&gt; leak&lt;/h3&gt;
+
+&lt;p&gt;Below 7.0 a non static inner class &lt;code&gt;IPhoneStateListener.Stub&lt;/code&gt; callback in &lt;code&gt;PhoneStateListener&lt;/code&gt; references to outside &lt;code&gt;PhoneStateListener&lt;/code&gt;, even caller has been destroyed and &amp;ldquo;un-registered&amp;rdquo; the &lt;code&gt;PhoneStateListener&lt;/code&gt;, the references coming from: Native Stack &amp;ndash;&amp;gt; PhoneStateListener &amp;ndash;&amp;gt; Context(Activity).&lt;/p&gt;
+
+&lt;p&gt;A wrapper class wraps a weak reference of &lt;code&gt;PhoneStateListener&lt;/code&gt; can be used to avoid this memory leak.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Caution: The original &lt;code&gt;PhoneStateListener&lt;/code&gt; object must be referenced by caller class, otherwise the weak reference in the wrapper class will get &lt;code&gt;null&lt;/code&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public class PhoneStateListenerWrapper extends PhoneStateListener {
+    private WeakReference&amp;lt;PhoneStateListener&amp;gt; mPhoneStateListenerRef;
+
+    public PhoneStateListenerWrapper(PhoneStateListener phoneStateListener) {
+        mPhoneStateListenerRef = new WeakReference&amp;lt;&amp;gt;(phoneStateListener);
+    }
+
+    @Override
+    public void onCallStateChanged(int state, String incomingNumber) {
+        super.onCallStateChanged(state, incomingNumber);
+        PhoneStateListener phoneStateListener = mPhoneStateListenerRef.get();
+        if (phoneStateListener != null) {
+            phoneStateListener.onCallStateChanged(state, incomingNumber);
+        }
+    }
+}
+
+private PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
+    @Override
+    public void onCallStateChanged(int state, String incomingNumber) {
+        super.onCallStateChanged(state, incomingNumber);
+        //...
+    }
+};
+private PhoneStateListenerWrapper mPhoneStateListenerWrapper = new PhoneStateListenerWrapper(mPhoneStateListener);
+
+((TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE)).listen(mPhoneStateListenerWrapper, PhoneStateListener.LISTEN_CALL_STATE);
+((TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE)).listen(mPhoneStateListenerWrapper, PhoneStateListener.LISTEN_NONE);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;audiomanager-leak&#34;&gt;&lt;code&gt;AudioManager&lt;/code&gt; leak&lt;/h3&gt;
+
+&lt;p&gt;Below 6.0 &lt;code&gt;AudioManager&lt;/code&gt; reference to the incoming context of constructor directly, the related issue is &lt;a href=&#34;https://issuetracker.google.com/issues/37024105&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;A simple workaround is using &lt;code&gt;Application&lt;/code&gt; context to get &lt;code&gt;AudioManager&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;mAudioManager = (AudioManager) context.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;inputmethodmanager-leak&#34;&gt;&lt;code&gt;InputMethodManager&lt;/code&gt; leak&lt;/h3&gt;
+
+&lt;p&gt;Refer to &lt;a href=&#34;https://issuetracker.google.com/issues/37043700&#34;&gt;issue 37043700&lt;/a&gt; and &lt;a href=&#34;https://issuetracker.google.com/issues/37090736&#34;&gt;issue 37090736&lt;/a&gt;, &lt;code&gt;mCurRootView&lt;/code&gt; or &lt;code&gt;mServedView&lt;/code&gt; or &lt;code&gt;mNextServedView&lt;/code&gt; in &lt;code&gt;InputMethodManager&lt;/code&gt; may reference to last focused view in a wide system version range. But I have not found this kind of leak in official system. However, &lt;code&gt;mLastSrvView&lt;/code&gt; of &lt;code&gt;InputMethodManager&lt;/code&gt; may cause leak in huawei 6.0 device, and &lt;code&gt;mLastSrvView&lt;/code&gt; field is not found in official source code, I think this is a leak for certain manufacturer.&lt;/p&gt;
+
+&lt;p&gt;To fix this kind of leak, a straight way is set the relative field of &lt;code&gt;InputMethodManager&lt;/code&gt; to &lt;code&gt;null&lt;/code&gt; when activity destroyed. Considering there may be multiple activities have this leak, a better way is fix this leak in the &lt;code&gt;onActivityDestroyed(Activity activity)&lt;/code&gt; method of &lt;code&gt;ActivityLifecycleCallbacks&lt;/code&gt;.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;@Override
+public void onActivityDestroyed(Activity activity) {
+	MemoryLeakFixer.fixInputMethodManagerLeak(activity);
+}
+
+public class MemoryLeakFixer {
+
+    public static void fixInputMethodManagerLeak(Activity activity) {
+        //Surround with a appropriate if condition to make sure execute fix when leak real exists is better.
+        InputMethodManager inputMethodManager = null;
+        try {
+            inputMethodManager = (InputMethodManager) activity.getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        } catch (Throwable t) {
+            t.printStackTrace();
+        }
+        if (inputMethodManager!= null) {
+            String[] fieldNames = new String[]{&amp;quot;mCurRootView&amp;quot;, &amp;quot;mServedView&amp;quot;, &amp;quot;mNextServedView&amp;quot;, &amp;quot;mLastSrvView&amp;quot;/*huawei*/};
+            Class clazz = inputMethodManager.getClass();
+            for (String fieldName : fieldNames) {
+                try {
+                    Field field = clazz.getDeclaredField(fieldName);
+                    if (field != null) {
+                        if (!field.isAccessible()) {
+                            field.setAccessible(true);
+                        }
+                        Object obj = field.get(inputMethodManager);
+                        if (obj instanceof View) {
+                            View view = (View) obj;
+                            if (view.getContext() == activity) {
+                                field.set(inputMethodManager, null);
+                            }
+                        }
+                    }
+                } catch (Throwable t) {
+                    t.printStackTrace();
+                }
+            }
+        }
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h3 id=&#34;textline-leak&#34;&gt;&lt;code&gt;TextLine&lt;/code&gt; leak&lt;/h3&gt;
+
+&lt;p&gt;An activity context may be referenced by &lt;code&gt;sCached&lt;/code&gt; in &lt;code&gt;TextLine&lt;/code&gt;, a simple solution is set every element of &lt;code&gt;sCached&lt;/code&gt; to &lt;code&gt;null&lt;/code&gt; in activity&amp;rsquo;s &lt;code&gt;onDestroy&lt;/code&gt; method.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public static void fixTextLineLeak() {
+    try {
+        Field field = Class.forName(&amp;quot;android.text.TextLine&amp;quot;).getDeclaredField(&amp;quot;sCached&amp;quot;);
+        field.setAccessible(true);
+        Object[] sCached = (Object[]) field.get(null);
+        if (sCached != null) {
+            for (int i = 0; i &amp;lt; sCached.length; i++) {
+                sCached[i] = null;
+            }
+        }
+    } catch (Throwable t) {
+        t.printStackTrace();
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;leak-because-of-misuse&#34;&gt;Leak because of misuse&lt;/h2&gt;
+
+&lt;h3 id=&#34;unremoved-viewtreeobserver-listener-leak&#34;&gt;Unremoved &lt;code&gt;ViewTreeObserver&lt;/code&gt; listener leak&lt;/h3&gt;
+
+&lt;p&gt;The scenario is after create a new item view for a &lt;code&gt;ViewPager&lt;/code&gt; by the &lt;code&gt;instantiateItem&lt;/code&gt; method of &lt;code&gt;PageAdapter&lt;/code&gt;, a listener reference to the item view indirectly have been add to the &lt;code&gt;ViewTreeObserver&lt;/code&gt; of the item view, and the listener never be removed from the &lt;code&gt;ViewTreeObserver&lt;/code&gt;, cause the item view leak even the view has been removed from the view hierarchy in the &lt;code&gt;destroyItem&lt;/code&gt; method of &lt;code&gt;PageAdapter&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Never forgot remove listeners of &lt;code&gt;ViewTreeObserver&lt;/code&gt;.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;final ViewTreeObserver observer = view.getViewTreeObserver();
+if (observer != null) {
+	observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+	    @Override
+	    public void onGlobalLayout() {
+    	    //do something
+			if (Build.VERSION.SDK_INT &amp;gt;= Build.VERSION_CODES.JELLY_BEAN) {
+				observer.removeOnGlobalLayoutListener(this);
+			} else {
+				observer.removeGlobalOnLayoutListener(this);
+			}
+		}
+	});
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Android Studio 3.0 Device File Explorer &amp; Fonts</title>
       <link>https://xjy2061.github.io/carina/post/Android%20Studio%203.0%20Device%20File%20Explorer%20&amp;%20Fonts/</link>
       <pubDate>Sun, 09 Jul 2017 15:13:05 +0800</pubDate>
