@@ -141,7 +141,7 @@ public class MemoryLeakFixer {
 
 &lt;p&gt;The scenario is after create a new item view for a &lt;code&gt;ViewPager&lt;/code&gt; by the &lt;code&gt;instantiateItem&lt;/code&gt; method of &lt;code&gt;PageAdapter&lt;/code&gt;, a listener reference to the item view indirectly have been add to the &lt;code&gt;ViewTreeObserver&lt;/code&gt; of the item view, and the listener never be removed from the &lt;code&gt;ViewTreeObserver&lt;/code&gt;, cause the item view leak even the view has been removed from the view hierarchy in the &lt;code&gt;destroyItem&lt;/code&gt; method of &lt;code&gt;PageAdapter&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;strong&gt;Never forgot remove listeners of &lt;code&gt;ViewTreeObserver&lt;/code&gt;.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Never forgot remove listeners from &lt;code&gt;ViewTreeObserver&lt;/code&gt;.&lt;/strong&gt;&lt;/p&gt;
 
 &lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;final ViewTreeObserver observer = view.getViewTreeObserver();
 if (observer != null) {
