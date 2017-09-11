@@ -128,7 +128,7 @@ public static void fixTextLineLeak() {
 ### Unremoved `ViewTreeObserver` listener leak
 The scenario is after create a new item view for a `ViewPager` by the `instantiateItem` method of `PageAdapter`, a listener reference to the item view indirectly have been add to the `ViewTreeObserver` of the item view, and the listener never be removed from the `ViewTreeObserver`, cause the item view leak even the view has been removed from the view hierarchy in the `destroyItem` method of `PageAdapter`.
 
-**Never forgot remove listeners of `ViewTreeObserver`.**
+**Never forgot remove listeners from `ViewTreeObserver`.**
 
 ```java
 final ViewTreeObserver observer = view.getViewTreeObserver();
