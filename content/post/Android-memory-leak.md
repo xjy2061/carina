@@ -56,7 +56,7 @@ mAudioManager = (AudioManager) context.getApplicationContext().getSystemService(
 ```
 
 ### `InputMethodManager` leak
-Refer to [issue 37043700](https://issuetracker.google.com/issues/37043700) and [issue 37090736](https://issuetracker.google.com/issues/37090736), `mCurRootView` or `mServedView` or `mNextServedView` in `InputMethodManager` may reference to last focused view on a wide system version range. But I have not found this kind of leak in official system. However, `mLastSrvView` of `InputMethodManager` may cause leak on huawei 6.0 device, and `mLastSrvView` field is not found in official source code, I think this is a leak for certain manufacturer.
+Refer to [issue 37043700](https://issuetracker.google.com/issues/37043700) and [issue 37090736](https://issuetracker.google.com/issues/37090736), `mCurRootView` or `mServedView` or `mNextServedView` in `InputMethodManager` may reference to last focused view on a wide system version range. But I have not found this kind of leak in official system. However, `mLastSrvView` of `InputMethodManager` may cause leak on huawei 6.0 and above device, and `mLastSrvView` field is not found in official source code, I think this is a leak for certain manufacturer.
 
 To fix this kind of leak, a straight way is set the relative field of `InputMethodManager` to `null` when activity destroyed. Considering there may be multiple activities have this leak, a better way is fix this leak in the `onActivityDestroyed(Activity activity)` method of `ActivityLifecycleCallbacks`.
 
