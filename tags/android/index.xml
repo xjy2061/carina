@@ -208,6 +208,8 @@ adb shell dumpsys gfxinfo &amp;lt;PACKAGE_NAME&amp;gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;Bitmap.createBitmap在低内存时在有些手机上可能返回null，而不是抛OutofMemoryError。&lt;/p&gt;&lt;/li&gt;
 
 &lt;li&gt;&lt;p&gt;对于apk压缩包的操作应使用android自带的aapt，避免直接使用zip，直接使用zip会将apk里面的raw资源压缩，导致有些rom下读取raw文件失败。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;如果不给&lt;code&gt;WebView&lt;/code&gt;设置&lt;code&gt;WebViewClient&lt;/code&gt;，在有些手机上会自动跳到系统浏览器。&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
     </item>
