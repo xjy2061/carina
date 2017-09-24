@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Task on Carina</title>
+    <link>https://xjy2061.github.io/carina/tags/task/index.xml</link>
+    <description>Recent content in Task on Carina</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <atom:link href="https://xjy2061.github.io/carina/tags/task/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Android task</title>
+      <link>https://xjy2061.github.io/carina/post/Android-task/</link>
+      <pubDate>Sun, 24 Sep 2017 14:44:33 +0800</pubDate>
+      
+      <guid>https://xjy2061.github.io/carina/post/Android-task/</guid>
+      <description>
+
+&lt;h2 id=&#34;singletask-and-flag-activity-new-task&#34;&gt;&lt;code&gt;singleTask&lt;/code&gt; and &lt;code&gt;FLAG_ACTIVITY_NEW_TASK&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;根据下面引用的官方文档的说法，&lt;code&gt;singleTask&lt;/code&gt;和&lt;code&gt;FLAG_ACTIVITY_NEW_TASK&lt;/code&gt;的行为是一致的，但是根据实际测试结果，二者的行为是有差别的。&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;This produces the same behavior as the &amp;ldquo;singleTask&amp;rdquo; launchMode value, discussed in the previous section.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;二者在决定activity属于哪个task上是一致的，都根据&lt;code&gt;taskAffinity&lt;/code&gt;（如果没设，默认为包名）来决定activity属于哪个task，如果当前存在一个名称跟&lt;code&gt;taskAffinity&lt;/code&gt;相同的task，则将activity置于已有的这个task，否则创建一个新task，并将activity作为这个task的根activity。&lt;/p&gt;
+
+&lt;p&gt;二者在启动activity的行为上是不一致的，如果activity所属的task已存在且task中已存在这个activity的实例，二者都会将整个task移到前台，但&lt;code&gt;singleTask&lt;/code&gt;会关闭这个activity以上的所有activity，并调用这个activity的&lt;code&gt;onNewIntent&lt;/code&gt;方法，而对于&lt;code&gt;FLAG_ACTIVITY_NEW_TASK&lt;/code&gt;，如果启动的activity是这个task的根activity，不做任何事情，否则会创建一个新的activity。&lt;/p&gt;
+
+&lt;h2 id=&#34;exported-activity&#34;&gt;Exported activity&lt;/h2&gt;
+
+&lt;p&gt;启动其他app的exported activity时，会忽略&lt;code&gt;launchMode&lt;/code&gt;，此时只能用&lt;code&gt;FLAG_ACTIVITY_NEW_TASK&lt;/code&gt;来创建新task。&lt;/p&gt;
+
+&lt;h2 id=&#34;startactivityforresult&#34;&gt;&lt;code&gt;startActivityForResult&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;调用&lt;code&gt;startActivityForResult&lt;/code&gt;来启动activity时，如果使用了&lt;code&gt;FLAG_ACTIVITY_NEW_TASK&lt;/code&gt;，启动activity后会立即收到&lt;code&gt;onActivityResult&lt;/code&gt;回调，且finish启动的activity后不会再收到&lt;code&gt;onActivityResult&lt;/code&gt;回调，而使用&lt;code&gt;singleTask&lt;/code&gt;和&lt;code&gt;singleInstance&lt;/code&gt;则是正常的行为。&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
