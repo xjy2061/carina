@@ -1,8 +1,9 @@
 +++
 date = "2017-09-24T14:44:33+08:00"
 title = "Android task"
-draft = true
-
+draft = false
+tags = ["Android", "Task"]
+categories = [ "Post" ]
 +++
 
 ## `singleTask` and `FLAG_ACTIVITY_NEW_TASK`
