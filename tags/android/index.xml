@@ -242,6 +242,8 @@ adb shell dumpsys gfxinfo &amp;lt;PACKAGE_NAME&amp;gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;如果不给&lt;code&gt;WebView&lt;/code&gt;设置&lt;code&gt;WebViewClient&lt;/code&gt;，在有些手机上会自动跳到系统浏览器。&lt;/p&gt;&lt;/li&gt;
 
 &lt;li&gt;&lt;p&gt;在Androd 7.0上如果使用&lt;code&gt;FLAG_ACTIVITY_REORDER_TO_FRONT&lt;/code&gt;来启动activity，快速连续点击不断启动activity时，可能会回到桌面。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;如果给&lt;code&gt;Paint&lt;/code&gt;同时设置了shader和color，会优先使用shader的颜色，例如&lt;code&gt;drawText&lt;/code&gt;时，文字颜色是shader的颜色，而非color所指定的颜色。&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
     </item>

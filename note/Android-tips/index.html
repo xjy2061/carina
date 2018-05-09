@@ -126,6 +126,8 @@ Tags <a href="/tags/android">android</a>, <a href="/tags/tips">tips</a>
 <li><p>如果不给<code>WebView</code>设置<code>WebViewClient</code>，在有些手机上会自动跳到系统浏览器。</p></li>
 
 <li><p>在Androd 7.0上如果使用<code>FLAG_ACTIVITY_REORDER_TO_FRONT</code>来启动activity，快速连续点击不断启动activity时，可能会回到桌面。</p></li>
+
+<li><p>如果给<code>Paint</code>同时设置了shader和color，会优先使用shader的颜色，例如<code>drawText</code>时，文字颜色是shader的颜色，而非color所指定的颜色。</p></li>
 </ul>
 
                   
