@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://xjy2061.github.io/carina/note/Android-graphics-tips/</loc>
+    <lastmod>2018-09-25T16:51:40+08:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://xjy2061.github.io/carina/post/Android-task/</loc>
     <lastmod>2017-09-24T14:44:33+08:00</lastmod>
   </url>
@@ -55,7 +60,7 @@
   
   <url>
     <loc>https://xjy2061.github.io/carina/</loc>
-    <lastmod>2017-09-24T14:44:33+08:00</lastmod>
+    <lastmod>2018-09-25T16:51:40+08:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -96,7 +101,7 @@
   
   <url>
     <loc>https://xjy2061.github.io/carina/note/</loc>
-    <lastmod>2017-04-29T18:54:21+08:00</lastmod>
+    <lastmod>2018-09-25T16:51:40+08:00</lastmod>
     <priority>0</priority>
   </url>
   
