@@ -31,5 +31,3 @@ categories = [ "Note" ]
 * 如果不给`WebView`设置`WebViewClient`，在有些手机上会自动跳到系统浏览器。
 
 * 在Androd 7.0上如果使用`FLAG_ACTIVITY_REORDER_TO_FRONT`来启动activity，快速连续点击不断启动activity时，可能会回到桌面。
-
-* 如果给`Paint`同时设置了shader和color，会优先使用shader的颜色，例如`drawText`时，文字颜色是shader的颜色，而非color所指定的颜色。
