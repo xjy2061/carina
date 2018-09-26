@@ -1,6 +1,6 @@
 +++
-date = "2018-09-25T16:51:40+08:00"
-title = "Android tips graphics"
+date = "2018-09-26T10:50:10+08:00"
+title = "Android graphics tips"
 draft = false
 
 +++
