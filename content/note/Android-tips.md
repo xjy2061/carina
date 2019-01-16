@@ -31,3 +31,5 @@ categories = [ "Note" ]
 * 如果不给`WebView`设置`WebViewClient`，在有些手机上会自动跳到系统浏览器。
 
 * 在Androd 7.0上如果使用`FLAG_ACTIVITY_REORDER_TO_FRONT`来启动activity，快速连续点击不断启动activity时，可能会回到桌面。
+
+* 在MIUI10上通过`Fragment`的`startActivity`方法来启动activity，通过theme中`windowAnimationStyle`设置的进入动画会失效。

@@ -2,7 +2,8 @@
 date = "2018-09-26T10:50:10+08:00"
 title = "Android graphics tips"
 draft = false
-
+tags = [ "Android", "graphics", "tips" ]
+categories = [ "Note" ]
 +++
 
 * 如果给`Paint`同时设置了shader和color，会优先使用shader的颜色，例如`drawText`时，文字颜色是shader的颜色，而非color所指定的颜色。
