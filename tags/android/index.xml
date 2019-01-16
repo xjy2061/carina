@@ -9,6 +9,22 @@
     <atom:link href="https://xjy2061.github.io/carina/tags/android/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Android graphics tips</title>
+      <link>https://xjy2061.github.io/carina/note/Android-graphics-tips/</link>
+      <pubDate>Wed, 26 Sep 2018 10:50:10 +0800</pubDate>
+      
+      <guid>https://xjy2061.github.io/carina/note/Android-graphics-tips/</guid>
+      <description>&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;如果给&lt;code&gt;Paint&lt;/code&gt;同时设置了shader和color，会优先使用shader的颜色，例如&lt;code&gt;drawText&lt;/code&gt;时，文字颜色是shader的颜色，而非color所指定的颜色。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;虽然官方文档表明开启硬件加速时，只要&lt;code&gt;ComposeShader&lt;/code&gt;里包含的shader是不同的类型且不是&lt;code&gt;ComposeShader&lt;/code&gt;，那么在api 28以下也可以使用&lt;code&gt;ComposeShader&lt;/code&gt;，但实际测试结果是只有关闭硬件加速&lt;code&gt;ComposeShader&lt;/code&gt;才起作用。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;如果给&lt;code&gt;Paint&lt;/code&gt;设置了&lt;strong&gt;PathEffect&lt;/strong&gt;，path的FillType是&lt;strong&gt;EVEN_ODD&lt;/strong&gt;时会失效。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Android task</title>
       <link>https://xjy2061.github.io/carina/post/Android-task/</link>
       <pubDate>Sun, 24 Sep 2017 14:44:33 +0800</pubDate>
@@ -242,6 +258,8 @@ adb shell dumpsys gfxinfo &amp;lt;PACKAGE_NAME&amp;gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;如果不给&lt;code&gt;WebView&lt;/code&gt;设置&lt;code&gt;WebViewClient&lt;/code&gt;，在有些手机上会自动跳到系统浏览器。&lt;/p&gt;&lt;/li&gt;
 
 &lt;li&gt;&lt;p&gt;在Androd 7.0上如果使用&lt;code&gt;FLAG_ACTIVITY_REORDER_TO_FRONT&lt;/code&gt;来启动activity，快速连续点击不断启动activity时，可能会回到桌面。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;在MIUI10上通过&lt;code&gt;Fragment&lt;/code&gt;的&lt;code&gt;startActivity&lt;/code&gt;方法来启动activity，通过theme中&lt;code&gt;windowAnimationStyle&lt;/code&gt;设置的进入动画会失效。&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
     </item>

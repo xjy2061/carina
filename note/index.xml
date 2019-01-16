@@ -76,6 +76,8 @@ adb shell dumpsys gfxinfo &amp;lt;PACKAGE_NAME&amp;gt;&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;如果不给&lt;code&gt;WebView&lt;/code&gt;设置&lt;code&gt;WebViewClient&lt;/code&gt;，在有些手机上会自动跳到系统浏览器。&lt;/p&gt;&lt;/li&gt;
 
 &lt;li&gt;&lt;p&gt;在Androd 7.0上如果使用&lt;code&gt;FLAG_ACTIVITY_REORDER_TO_FRONT&lt;/code&gt;来启动activity，快速连续点击不断启动activity时，可能会回到桌面。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;在MIUI10上通过&lt;code&gt;Fragment&lt;/code&gt;的&lt;code&gt;startActivity&lt;/code&gt;方法来启动activity，通过theme中&lt;code&gt;windowAnimationStyle&lt;/code&gt;设置的进入动画会失效。&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
     </item>
