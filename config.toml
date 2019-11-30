@@ -1,6 +1,7 @@
 languageCode = "en-us"
 title = "Carina"
 baseURL = "https://xjy2061.github.io/carina/"
+theme = "bootstrap"
 
 [author]
   name = "xjy2061"
