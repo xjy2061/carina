@@ -9,6 +9,66 @@
     <atom:link href="https://xjy2061.github.io/carina/categories/post/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Webp解码RGB_565问题总结</title>
+      <link>https://xjy2061.github.io/carina/post/Webp%E8%A7%A3%E7%A0%81RGB_565%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/</link>
+      <pubDate>Sat, 30 Nov 2019 20:55:09 +0800</pubDate>
+      
+      <guid>https://xjy2061.github.io/carina/post/Webp%E8%A7%A3%E7%A0%81RGB_565%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/</guid>
+      <description>&lt;p&gt;最近遇到自定义webp解码使用rgb565时出现颜色错乱的问题，查了比较长时间，总结一下过程。&lt;/p&gt;
+
+&lt;p&gt;开始时怀疑代码逻辑有问题，于是写demo测试native代码逻辑，尝试修改&lt;code&gt;Bitmap&lt;/code&gt;的一些属性，确认代码逻辑正确。&lt;/p&gt;
+
+&lt;p&gt;然后考虑到用系统解码api和官方ndk sample中的webp解码示例都正常，怀疑是不是对&lt;strong&gt;libwebp&lt;/strong&gt;的调用方式有问题，于是去看源码。先从简单的ndk sample开始看，发现调用方式是一样的，然后看了系统webp解码部分源码，发现系统使用的解码函数不一样，尝试换成跟系统一样的函数，问题依然存在。由于官方示例并没有将图片解码成&lt;code&gt;Bitmap&lt;/code&gt;，所以接着仔细看系统源码的解码过程，看是不是在某些细节里有特殊处理，最后没有发现有特殊的地方。&lt;/p&gt;
+
+&lt;p&gt;看了几天源码无果后，最后想到是不是解码得到的&lt;code&gt;Bitmap&lt;/code&gt;的底层像素数据不一样，而不是对&lt;code&gt;Bitmap&lt;/code&gt;的设置不一样，于是写测试代码获取&lt;code&gt;Bitmap&lt;/code&gt;的像素字节数组，对2种方式解码得到的&lt;code&gt;Bitmap&lt;/code&gt;的像素数据进行比较，发现同一像素的2个字节的位置刚好相反。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[74, 105, -125, -18, ...]
+
+[105, 74, -18, -125, ...]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;到这里终于有点眉目了，后面就去找导致位置相反的原因，然后在&lt;strong&gt;libwebp&lt;/strong&gt;源码定义像素格式的地方发现了一段注释，感觉很可能跟&lt;code&gt;WEBP_SWAP_16BITS_CSP&lt;/code&gt;有关，但在代码中没有找到这个变量。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;// ...
+// RGB-565: [r4 r3 r2 r1 r0 g5 g4 g3], [g2 g1 g0 b4 b3 b2 b1 b0], ...
+// In the case WEBP_SWAP_16BITS_CSP is defined, the bytes are swapped for
+// these two modes:
+// RGBA-4444: [b3 b2 b1 b0 a3 a2 a1 a0], [r3 r2 r1 r0 g3 g2 g1 g0], ...
+// RGB-565: [g2 g1 g0 b4 b3 b2 b1 b0], [r4 r3 r2 r1 r0 g5 g4 g3], ...
+
+typedef enum WEBP_CSP_MODE {
+  // ...
+  MODE_RGB_565 = 6,
+  // ...
+} WEBP_CSP_MODE;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;最后怀疑&lt;code&gt;WEBP_SWAP_16BITS_CSP&lt;/code&gt;是在编译时指定的，后来终于在官方示例工程的&lt;strong&gt;CMakeLists&lt;/strong&gt;文件和系统源码的&lt;strong&gt;libwebp&lt;/strong&gt;编译配置中找到了它的踪迹。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-cmake&#34;&gt;# CMakeList.txt
+if(WEBP_ENABLE_SWAP_16BIT_CSP)
+  add_definitions(-DWEBP_SWAP_16BIT_CSP=1)
+endif()
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-mk&#34;&gt;# Android.bp
+cflags: [
+    &amp;quot;-O2&amp;quot;,
+    &amp;quot;-DANDROID&amp;quot;,
+    &amp;quot;-DWEBP_SWAP_16BIT_CSP&amp;quot;,
+    &amp;quot;-Wall&amp;quot;,
+    &amp;quot;-Werror&amp;quot;,
+ ],
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;到这里问题原因已基本查明，然后修改图片库&lt;strong&gt;libwebp&lt;/strong&gt;编译配置，打包验证，使用&lt;code&gt;RGB_565&lt;/code&gt;解码的图片正常显示了。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-mk&#34;&gt;WEBP_CFLAGS := -Wall -DANDROID -DHAVE_MALLOC_H -DHAVE_PTHREAD -DWEBP_USE_THREAD -DWEBP_FORCE_ALIGNED -DWEBP_SWAP_16BIT_CSP
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Android task</title>
       <link>https://xjy2061.github.io/carina/post/Android-task/</link>
       <pubDate>Sun, 24 Sep 2017 14:44:33 +0800</pubDate>
