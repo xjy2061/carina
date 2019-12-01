@@ -1,5 +1,5 @@
 +++
-title = "Webp解码RGB_565问题总结"
+title = "Webp解码RGB_565问题记录"
 draft = false
 date = "2019-11-30T20:55:09+08:00"
 tags = [ "Android", "webp", "RGB_565" ]
