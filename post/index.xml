@@ -10,11 +10,11 @@
     <atom:link href="https://xjy2061.github.io/carina/post/index.xml" rel="self" type="application/rss+xml" />
     
     <item>
-      <title>Webp解码RGB_565问题总结</title>
-      <link>https://xjy2061.github.io/carina/post/Webp%E8%A7%A3%E7%A0%81RGB_565%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/</link>
+      <title>Webp解码RGB_565问题记录</title>
+      <link>https://xjy2061.github.io/carina/post/Webp%E8%A7%A3%E7%A0%81RGB_565%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/</link>
       <pubDate>Sat, 30 Nov 2019 20:55:09 +0800</pubDate>
       
-      <guid>https://xjy2061.github.io/carina/post/Webp%E8%A7%A3%E7%A0%81RGB_565%E9%97%AE%E9%A2%98%E6%80%BB%E7%BB%93/</guid>
+      <guid>https://xjy2061.github.io/carina/post/Webp%E8%A7%A3%E7%A0%81RGB_565%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/</guid>
       <description>&lt;p&gt;最近遇到自定义webp解码使用rgb565时出现颜色错乱的问题，查了比较长时间，总结一下过程。&lt;/p&gt;
 
 &lt;p&gt;开始时怀疑代码逻辑有问题，于是写demo测试native代码逻辑，尝试修改&lt;code&gt;Bitmap&lt;/code&gt;的一些属性，确认代码逻辑正确。&lt;/p&gt;
