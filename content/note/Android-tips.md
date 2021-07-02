@@ -10,7 +10,7 @@ categories = [ "Note" ]
 
 * 在不同的`PendingIntent`的`Intent`中设置extra，在处理`Intent`的地方获取的extra始终相同，可以通过设置不同RequestCode来区分不同的`PendingIntent`。
 
-* 对于replace fragment，通过代码和通过配置文件加入最初的fragment这两种方式之间是有区别的，当通过代码的加入最初的fragment时，replace一个新的fragment后再回退，会调最初的fragment的onCreateView方法，说明replace时最初的fragment被销毁了，而通过配置文件的方法则不会调用onCreateView方法。
+* 对于 replace `Fragment`，通过代码和 layout 文件加入最初的 `Fragment` 这两种方式之间是有区别的，replace 后最初 `Fragment` 的 `onDestroyView` 方法都会被调用，但再回退时，通过代码方式加入的最初 `Fragment` 会重新显示，其 `onCreateView` 方法会被调用，而 layout 文件方式不会重新显示。
 
 * 在xml中加入fragment时键盘会自动弹出，通过代码加入时不会。
 
