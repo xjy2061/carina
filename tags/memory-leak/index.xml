@@ -75,7 +75,7 @@ private PhoneStateListenerWrapper mPhoneStateListenerWrapper = new PhoneStateLis
 
 &lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;@Override
 public void onActivityDestroyed(Activity activity) {
-	MemoryLeakFixer.fixInputMethodManagerLeak(activity);
+    MemoryLeakFixer.fixInputMethodManagerLeak(activity);
 }
 
 public class MemoryLeakFixer {
@@ -145,17 +145,17 @@ public class MemoryLeakFixer {
 
 &lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;final ViewTreeObserver observer = view.getViewTreeObserver();
 if (observer != null) {
-	observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-	    @Override
-	    public void onGlobalLayout() {
-    	    //do something
-			if (Build.VERSION.SDK_INT &amp;gt;= Build.VERSION_CODES.JELLY_BEAN) {
-				observer.removeOnGlobalLayoutListener(this);
-			} else {
-				observer.removeGlobalOnLayoutListener(this);
-			}
-		}
-	});
+    observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            //do something
+            if (Build.VERSION.SDK_INT &amp;gt;= Build.VERSION_CODES.JELLY_BEAN) {
+                observer.removeOnGlobalLayoutListener(this);
+            } else {
+                observer.removeGlobalOnLayoutListener(this);
+            }
+        }
+    });
 }
 &lt;/code&gt;&lt;/pre&gt;
 </description>

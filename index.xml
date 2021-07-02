@@ -182,7 +182,7 @@ private PhoneStateListenerWrapper mPhoneStateListenerWrapper = new PhoneStateLis
 
 &lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;@Override
 public void onActivityDestroyed(Activity activity) {
-	MemoryLeakFixer.fixInputMethodManagerLeak(activity);
+    MemoryLeakFixer.fixInputMethodManagerLeak(activity);
 }
 
 public class MemoryLeakFixer {
@@ -252,17 +252,17 @@ public class MemoryLeakFixer {
 
 &lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;final ViewTreeObserver observer = view.getViewTreeObserver();
 if (observer != null) {
-	observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-	    @Override
-	    public void onGlobalLayout() {
-    	    //do something
-			if (Build.VERSION.SDK_INT &amp;gt;= Build.VERSION_CODES.JELLY_BEAN) {
-				observer.removeOnGlobalLayoutListener(this);
-			} else {
-				observer.removeGlobalOnLayoutListener(this);
-			}
-		}
-	});
+    observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        @Override
+        public void onGlobalLayout() {
+            //do something
+            if (Build.VERSION.SDK_INT &amp;gt;= Build.VERSION_CODES.JELLY_BEAN) {
+                observer.removeOnGlobalLayoutListener(this);
+            } else {
+                observer.removeGlobalOnLayoutListener(this);
+            }
+        }
+    });
 }
 &lt;/code&gt;&lt;/pre&gt;
 </description>
@@ -458,7 +458,7 @@ adb shell dumpsys gfxinfo &amp;lt;PACKAGE_NAME&amp;gt;&lt;/p&gt;&lt;/li&gt;
 
 &lt;li&gt;&lt;p&gt;在不同的&lt;code&gt;PendingIntent&lt;/code&gt;的&lt;code&gt;Intent&lt;/code&gt;中设置extra，在处理&lt;code&gt;Intent&lt;/code&gt;的地方获取的extra始终相同，可以通过设置不同RequestCode来区分不同的&lt;code&gt;PendingIntent&lt;/code&gt;。&lt;/p&gt;&lt;/li&gt;
 
-&lt;li&gt;&lt;p&gt;对于replace fragment，通过代码和通过配置文件加入最初的fragment这两种方式之间是有区别的，当通过代码的加入最初的fragment时，replace一个新的fragment后再回退，会调最初的fragment的onCreateView方法，说明replace时最初的fragment被销毁了，而通过配置文件的方法则不会调用onCreateView方法。&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;对于 replace &lt;code&gt;Fragment&lt;/code&gt;，通过代码和 layout 文件加入最初的 &lt;code&gt;Fragment&lt;/code&gt; 这两种方式之间是有区别的，replace 后最初 &lt;code&gt;Fragment&lt;/code&gt; 的 &lt;code&gt;onDestroyView&lt;/code&gt; 方法都会被调用，但再回退时，通过代码方式加入的最初 &lt;code&gt;Fragment&lt;/code&gt; 会重新显示，其 &lt;code&gt;onCreateView&lt;/code&gt; 方法会被调用，而 layout 文件方式不会重新显示。&lt;/p&gt;&lt;/li&gt;
 
 &lt;li&gt;&lt;p&gt;在xml中加入fragment时键盘会自动弹出，通过代码加入时不会。&lt;/p&gt;&lt;/li&gt;
 
@@ -830,6 +830,48 @@ buildConfigField &amp;quot;String&amp;quot;, &amp;quot;FIELD_NAME&amp;quot;, &am
 &lt;p&gt;2019.10.01 2019.10.04 2019.10.06 2019.10.06 2019.10.13 2019.10.15 2019.10.18 2019.10.25 2019.10.28&lt;/p&gt;
 
 &lt;p&gt;2019.11.02 2019.11.03 2019.11.06 2019.11.09 2019.11.13 2019.11.16 2019.11.21 2019.11.23 2019.11.29&lt;/p&gt;
+
+&lt;p&gt;2019.12.13 2019.12.15 2019.12.21 2019.12.26 2019.12.27 2019.12.31&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;2020.01.04 2020.01.06 2020.01.10 2020.01.13 2020.01.17 2020.01.21 2020.01.25 2020.01.26&lt;/p&gt;
+
+&lt;p&gt;2020.02.04 2020.02.09 2020.02.12 2020.02.29&lt;/p&gt;
+
+&lt;p&gt;2020.03.07 2020.03.14 2020.03.21 2020.03.27 2020.03.28&lt;/p&gt;
+
+&lt;p&gt;2020.04.04 2020.04.18 2020.04.25 2020.04.29&lt;/p&gt;
+
+&lt;p&gt;2020.05.03 2020.05.05 2020.05.07 2020.05.10 2020.05.13 2020.05.16 2020.05.19 2020.05.22 2020.05.24 2020.05.27&lt;/p&gt;
+
+&lt;p&gt;2020.06.03 2020.06.06 2020.06.09 2020.06.12 2020.06.19 2020.06.23 2020.06.26 2020.06.28&lt;/p&gt;
+
+&lt;p&gt;2020.07.03 2020.07.04 2020.07.10 2020.07.17 2020.07.23 2020.07.26 2020.07.29&lt;/p&gt;
+
+&lt;p&gt;2020.08.01 2020.08.04 2020.08.08 2020.08.12 2020.08.16 2020.08.20 2020.08.22 2020.08.25 2020.08.29&lt;/p&gt;
+
+&lt;p&gt;2020.09.02 2020.09.04 2020.09.05 2020.09.08 2020.09.11 2020.09.13 2020.09.15 2020.09.18 2020.09.20 2020.09.24 2020.09.26 2020.09.30&lt;/p&gt;
+
+&lt;p&gt;2020.10.07 2020.10.08 2020.10.10 2020.10.12 2020.10.18 2020.10.22 2020.10.29&lt;/p&gt;
+
+&lt;p&gt;2020.11.06 2020.11.11 2020.11.14 2020.11.18 2020.11.20 2020.11.25 2020.11.28&lt;/p&gt;
+
+&lt;p&gt;2020.12.03 2020.12.05 2020.12.09 2020.12.11 2020.12.18 2020.12.21 2020.12.26 2020.12.29 2020.12.31&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;2021.01.03 2021.01.08 2021.01.11 2021.01.15 2021.01.18 2021.01.22 2021.01.24 2021.01.26 2021.01.29&lt;/p&gt;
+
+&lt;p&gt;2021.02.03 2021.02.06 2021.02.14 2021.02.18 2021.02.24 2021.02.28&lt;/p&gt;
+
+&lt;p&gt;2021.03.05 2021.03.08 2021.03.11 2021.03.14 2021.03.17 2021.03.20 2021.03.22 2021.03.26&lt;/p&gt;
+
+&lt;p&gt;2021.04.03 2021.04.10 2021.04.14 2021.04.16 2021.04.23 2021.04.30&lt;/p&gt;
+
+&lt;p&gt;2021.05.02 2021.05.04 2021.05.08 2021.05.14 2021.05.19&lt;/p&gt;
+
+&lt;p&gt;2021.06.11 2021.06.13 2021.06.16 2021.06.19 2021.06.23 2021.06.26 2021.06.29&lt;/p&gt;
 </description>
     </item>
     
