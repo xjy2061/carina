@@ -17,7 +17,7 @@ categories = [ "Post" ]
 
 >**注意**：Android Studio 将用 Device File Explorer 打开的文件保存在工程外的临时目录中，如果在 Device File Explorer 中修改文件，并想把修改保存到设备中，需要手动将修改的文件上传到设备中。
 
-![Device File Explorer](device-file-explorer.png)  
+![Device File Explorer](images/device-file-explorer.png)  
 **Figure1** Device File Explorer窗口
 
 当浏览设备文件时，以下2个目录是经常访问的：
@@ -39,15 +39,15 @@ Android O 可以通过将字体文件加入**res/font**目录来将字体作为�
 1. 鼠标右键点击**res**目录，选择**New > Android Resource Directory**，打开**New Resource Directory**窗口。
 
 2. 在**Resource type**列表里选择**font**，然后点击**OK**。  
-![Add font directory](add-font-directory.png)  
+![Add font directory](images/add-font-directory.png)  
 **Figure2** 添加字体目录
 
 3. 添加字体文件到**font**目录中。  
-![Add font files](add-font-files.png)  
+![Add font files](images/add-font-files.png)  
 **Figure3** 添加字体文件到资源目录
 
 4. 双击字体文件预览字体。  
-![Preview font file](preview-font-file.png)  
+![Preview font file](images/preview-font-file.png)  
 **Figure4** 预览字体文件
 
 #### 创建 font family
@@ -90,7 +90,7 @@ font family 是一个包含多个字体文件以及它们的style和weight信息
 ```
 
 * 在 layout 文件的 design 编辑器中选择`TextView`打开属性窗口，展开`textAppearance`属性，从`fontFamily`列表中选择字体。  
-![Select font](select-font.png)  
+![Select font](images/select-font.png)  
 **Figure5** 在属性窗口中选择字体
 
 ### Downloadable fonts
@@ -110,7 +110,7 @@ Android O 和 Android Support Library 26 引入了从`provider`请求字体的ap
 >**注意**：使用 Google Fonts Provider 要求设备中的 Google Play Services 版本大于等于11。
 
 1. 在**Layout Editor**中选择一个`TextView`，在打开的属性窗口中选择**fontFamily > More Fonts**，打开**Resources**窗口。  
-![Using layout editor](using-layout-editor.png)  
+![Using layout editor](images/using-layout-editor.png)  
 **Figure6** 使用 layout editor
 
 2. 在**Source**下拉列表中选择**Google Fonts**。
@@ -118,11 +118,11 @@ Android O 和 Android Support Library 26 引入了从`provider`请求字体的ap
 3. 在**Fonts**列表中选择一个字体。
 
 4. 选择**Create downloadable font**并点击**OK**。  
-![Select font from resources window](select-font-from-resources-window.png)  
+![Select font from resources window](images/select-font-from-resources-window.png)  
 **Figure7** 从 Resources 窗口中选择字体
 
 Android Studio 会自动生成相应的 xml 文件。  
-![Font file](font-file.png)  
+![Font file](images/font-file.png)  
 **Figure8** 生成的字体 xml 文件
 
 #### 其他使用 Downloadable Fonts 的方式
