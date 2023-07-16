@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Android studio tips | Carina</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Share module between projects Add this to settings.gradle file at the project root:
+include &#39;:libraryName&#39; project(&#39;:libraryName&#39;).projectDir=new File(&#39;/path/to/library&#39;) where the path you specify in the second line is the path to the directory containing the library&rsquo;s build.gradle file. The path can be relative or absolute.
+Avoid so file can not find problem If library&rsquo;s jniLibs contians armeabi-v7a folder, but main module&rsquo;s jniLibs contains not, the app will crash because of so file could not found.">
+    <meta name="generator" content="Hugo 0.115.3">
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="/carina/ananke/css/main.min.css" >
+
+
+
+    
+    
+    
+      
+
+    
+
+    
+    
+    <meta property="og:title" content="Android studio tips" />
+<meta property="og:description" content="Share module between projects Add this to settings.gradle file at the project root:
+include &#39;:libraryName&#39; project(&#39;:libraryName&#39;).projectDir=new File(&#39;/path/to/library&#39;) where the path you specify in the second line is the path to the directory containing the library&rsquo;s build.gradle file. The path can be relative or absolute.
+Avoid so file can not find problem If library&rsquo;s jniLibs contians armeabi-v7a folder, but main module&rsquo;s jniLibs contains not, the app will crash because of so file could not found." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xjy2061.github.io/carina/note/android-studio-tips/" /><meta property="article:section" content="note" />
+<meta property="article:published_time" content="2017-03-11T16:08:07+08:00" />
+<meta property="article:modified_time" content="2017-03-11T16:08:07+08:00" />
+<meta itemprop="name" content="Android studio tips">
+<meta itemprop="description" content="Share module between projects Add this to settings.gradle file at the project root:
+include &#39;:libraryName&#39; project(&#39;:libraryName&#39;).projectDir=new File(&#39;/path/to/library&#39;) where the path you specify in the second line is the path to the directory containing the library&rsquo;s build.gradle file. The path can be relative or absolute.
+Avoid so file can not find problem If library&rsquo;s jniLibs contians armeabi-v7a folder, but main module&rsquo;s jniLibs contains not, the app will crash because of so file could not found."><meta itemprop="datePublished" content="2017-03-11T16:08:07+08:00" />
+<meta itemprop="dateModified" content="2017-03-11T16:08:07+08:00" />
+<meta itemprop="wordCount" content="201">
+<meta itemprop="keywords" content="Android Studio,tips," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Android studio tips"/>
+<meta name="twitter:description" content="Share module between projects Add this to settings.gradle file at the project root:
+include &#39;:libraryName&#39; project(&#39;:libraryName&#39;).projectDir=new File(&#39;/path/to/library&#39;) where the path you specify in the second line is the path to the directory containing the library&rsquo;s build.gradle file. The path can be relative or absolute.
+Avoid so file can not find problem If library&rsquo;s jniLibs contians armeabi-v7a folder, but main module&rsquo;s jniLibs contains not, the app will crash because of so file could not found."/>
+
+	
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  
+  <header class="cover bg-top" style="background-image: url('https://xjy2061.github.io/carina/images/gohugo-default-sample-hero-image.jpg');">
+    <div class="bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="/carina/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Carina
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="/carina/" title="home page">
+              home
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="/carina/note/" title="Notes page">
+              Notes
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+<div class="ananke-socials">
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
+        
+          <div class="f2 f1-l fw2 white-90 mb0 lh-title">Android studio tips</div>
+          
+        
+      </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked">
+          
+        NOTES
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Android studio tips</h1>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2017-03-11T16:08:07+08:00">March 11, 2017</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h2 id="share-module-between-projects">Share module between projects</h2>
+<p>Add this to <code>settings.gradle</code> file at the project root:</p>
+<pre><code>include ':libraryName' 
+project(':libraryName').projectDir=new File('/path/to/library')
+</code></pre>
+<p>where the path you specify in the second line is the path to the directory containing the library&rsquo;s <code>build.gradle</code> file. The path can be relative or absolute.</p>
+<h2 id="avoid-so-file-can-not-find-problem">Avoid so file can not find problem</h2>
+<p>If library&rsquo;s <strong>jniLibs</strong> contians <strong>armeabi-v7a</strong> folder, but main module&rsquo;s <strong>jniLibs</strong> contains not, the app will crash because of so file could not found.</p>
+<h2 id="problems-after-change-sdk-location">Problems after change sdk location</h2>
+<p>After change <strong>sdk loaction</strong>, android studio always fetching documentation from network even you have downloaded the documentation with sdk tools, and no longer auto attach the support library source code. To fix these problems, you should close the project and reopen it(not use Open Recent).</p>
+<h2 id="incompatible-type-error-occurs-when-compile">Incompatible type error occurs when compile</h2>
+<p>The compiler error output make no sense(An incompatible type error occurs at an import class line), maybe the real position of error is in <code>BuildConfig</code>.</p>
+<h2 id="define-string-buildconfig-field-in-gradle">Define <code>String</code> BuildConfig field in gradle</h2>
+<p>When define a <code>String</code> BuildConfig field in build.gradle file, make sure the field value is surrounded with quote, even the gradle variable type is <code>String</code>, otherwise the field type will wrong.</p>
+<pre tabindex="0"><code class="language-dsl" data-lang="dsl">def fieldValue = &#34;value&#34;
+...
+buildConfigField &#34;String&#34;, &#34;FIELD_NAME&#34;, &#34;\&#34;${fieldValue}\&#34;&#34;
+</code></pre><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/carina/tags/android-studio/" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Android Studio</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/carina/tags/tips/" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">tips</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://xjy2061.github.io/carina/" >
+    &copy;  Carina 2023 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>

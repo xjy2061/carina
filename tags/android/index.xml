@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Android on Carina</title>
+    <link>https://xjy2061.github.io/carina/tags/android/</link>
+    <description>Recent content in Android on Carina</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 30 Nov 2019 20:55:09 +0800</lastBuildDate><atom:link href="https://xjy2061.github.io/carina/tags/android/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Webp解码RGB_565问题记录</title>
+      <link>https://xjy2061.github.io/carina/post/webp%E8%A7%A3%E7%A0%81rgb_565%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Sat, 30 Nov 2019 20:55:09 +0800</pubDate>
+      
+      <guid>https://xjy2061.github.io/carina/post/webp%E8%A7%A3%E7%A0%81rgb_565%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/</guid>
+      <description>最近遇到自定义webp解码使用rgb565时出现颜色错乱的问题，查了比较长时间，总结一下过程。
+开始时怀疑代码逻辑有问题，于是写demo测试native代码逻辑，尝试修改Bitmap的一些属性，确认代码逻辑正确。
+然后考虑到用系统解码api和官方ndk sample中的webp解码示例都正常，怀疑是不是对libwebp的调用方式有问题，于是去看源码。先从简单的ndk sample开始看，发现调用方式是一样的，然后看了系统webp解码部分源码，发现系统使用的解码函数不一样，尝试换成跟系统一样的函数，问题依然存在。由于官方示例并没有将图片解码成Bitmap，所以接着仔细看系统源码的解码过程，看是不是在某些细节里有特殊处理，最后没有发现有特殊的地方。
+看了几天源码无果后，最后想到是不是解码得到的Bitmap的底层像素数据不一样，而不是对Bitmap的设置不一样，于是写测试代码获取Bitmap的像素字节数组，对2种方式解码得到的Bitmap的像素数据进行比较，发现同一像素的2个字节的位置刚好相反。
+[74, 105, -125, -18, ...] [105, 74, -18, -125, ...] 到这里终于有点眉目了，后面就去找导致位置相反的原因，然后在libwebp源码定义像素格式的地方发现了一段注释，感觉很可能跟WEBP_SWAP_16BITS_CSP有关，但在代码中没有找到这个变量。
+// ... // RGB-565: [r4 r3 r2 r1 r0 g5 g4 g3], [g2 g1 g0 b4 b3 b2 b1 b0], ... // In the case WEBP_SWAP_16BITS_CSP is defined, the bytes are swapped for // these two modes: // RGBA-4444: [b3 b2 b1 b0 a3 a2 a1 a0], [r3 r2 r1 r0 g3 g2 g1 g0], .</description>
+    </item>
+    
+    <item>
+      <title>Android graphics tips</title>
+      <link>https://xjy2061.github.io/carina/note/android-graphics-tips/</link>
+      <pubDate>Wed, 26 Sep 2018 10:50:10 +0800</pubDate>
+      
+      <guid>https://xjy2061.github.io/carina/note/android-graphics-tips/</guid>
+      <description>如果给Paint同时设置了shader和color，会优先使用shader的颜色，例如drawText时，文字颜色是shader的颜色，而非color所指定的颜色。
+虽然官方文档表明开启硬件加速时，只要ComposeShader里包含的shader是不同的类型且不是ComposeShader，那么在api 28以下也可以使用ComposeShader，但实际测试结果是只有关闭硬件加速ComposeShader才起作用。
+如果给Paint设置了PathEffect，path的FillType是EVEN_ODD时会失效。</description>
+    </item>
+    
+    <item>
+      <title>Android task</title>
+      <link>https://xjy2061.github.io/carina/post/android-task/</link>
+      <pubDate>Sun, 24 Sep 2017 14:44:33 +0800</pubDate>
+      
+      <guid>https://xjy2061.github.io/carina/post/android-task/</guid>
+      <description>singleTask and FLAG_ACTIVITY_NEW_TASK 根据下面引用的官方文档的说法，singleTask和FLAG_ACTIVITY_NEW_TASK的行为是一致的，但是根据实际测试结果，二者的行为是有差别的。
+This produces the same behavior as the &amp;ldquo;singleTask&amp;rdquo; launchMode value, discussed in the previous section.
+二者在决定activity属于哪个task上是一致的，都根据taskAffinity（如果没设，默认为包名）来决定activity属于哪个task，如果当前存在一个名称跟taskAffinity相同的task，则将activity置于已有的这个task，否则创建一个新task，并将activity作为这个task的根activity。
+二者在启动activity的行为上是不一致的，如果activity所属的task已存在且task中已存在这个activity的实例，二者都会将整个task移到前台，但singleTask会关闭这个activity上面的所有activity，并调用这个activity的onNewIntent方法，而对于FLAG_ACTIVITY_NEW_TASK，如果启动的activity是这个task的根activity，不做任何事情，否则会创建一个新的activity。
+Exported activity 启动其他app的exported activity时，会忽略launchMode，此时只能用FLAG_ACTIVITY_NEW_TASK来创建新task。
+startActivityForResult 调用startActivityForResult来启动activity时，如果使用了FLAG_ACTIVITY_NEW_TASK，启动activity后会立即收到onActivityResult回调，且finish启动的activity后不会再收到onActivityResult回调，而使用singleTask和singleInstance则是正常的行为。</description>
+    </item>
+    
+    <item>
+      <title>Android memory leak</title>
+      <link>https://xjy2061.github.io/carina/post/android-memory-leak/</link>
+      <pubDate>Sun, 10 Sep 2017 20:09:00 +0800</pubDate>
+      
+      <guid>https://xjy2061.github.io/carina/post/android-memory-leak/</guid>
+      <description>Leak because of system bug PhoneStateListener leak Below 7.0 a non static inner class IPhoneStateListener.Stub callback in PhoneStateListener references to outside PhoneStateListener, even caller has been destroyed and &amp;ldquo;un-registered&amp;rdquo; the PhoneStateListener, the references coming from: Native Stack &amp;ndash;&amp;gt; PhoneStateListener &amp;ndash;&amp;gt; Context(Activity).
+A wrapper class wraps a weak reference of PhoneStateListener can be used to avoid this memory leak.
+Caution: The original PhoneStateListener object must be referenced by caller class, otherwise the weak reference in the wrapper class will get null.</description>
+    </item>
+    
+    <item>
+      <title>Android command line</title>
+      <link>https://xjy2061.github.io/carina/note/android-command-line/</link>
+      <pubDate>Sat, 29 Apr 2017 18:54:21 +0800</pubDate>
+      
+      <guid>https://xjy2061.github.io/carina/note/android-command-line/</guid>
+      <description>Show current tasks
+adb shell dumpsys activity activites
+Show screen infos
+adb shell dumpsys window
+Show gfxinfo
+adb shell dumpsys gfxinfo &amp;lt;PACKAGE_NAME&amp;gt;</description>
+    </item>
+    
+    <item>
+      <title>Android tips</title>
+      <link>https://xjy2061.github.io/carina/note/android-tips/</link>
+      <pubDate>Sat, 29 Apr 2017 18:08:07 +0800</pubDate>
+      
+      <guid>https://xjy2061.github.io/carina/note/android-tips/</guid>
+      <description>如果要在低版本系统上使用高版本系统才加入的类，可以在app中加入同名类，在高版本系统上安装时这个同名类会删除，还是使用系统的类，在低版本系统则使用在app中加入的类。
+在不同的PendingIntent的Intent中设置extra，在处理Intent的地方获取的extra始终相同，可以通过设置不同RequestCode来区分不同的PendingIntent。
+对于 replace Fragment，通过代码和 layout 文件加入最初的 Fragment 这两种方式之间是有区别的，replace 后最初 Fragment 的 onDestroyView 方法都会被调用，但再回退时，通过代码方式加入的最初 Fragment 会重新显示，其 onCreateView 方法会被调用，而 layout 文件方式不会重新显示。
+在xml中加入fragment时键盘会自动弹出，通过代码加入时不会。
+AsyncTask在3.0以前是并行执行的，3.0及以后顺序执行的，AsyncTask是通过静态的Handler成员变量将结果post到主线程中执行的，所以要确保加载AsyncTask类是在主线程中执行的，在4.1及以后系统已经确保的这一点。
+如果自己decode ninepatch图片，要先compile ninepatch图片。
+android ListView Adapter&amp;rsquo;s getView method sometimes provide a wrong type convertView. stackoverflow
+市场解锁、gaeproxy等软件会修改运营商信息。
+cookie里包含有特殊字符会导致请求失败。
+Bitmap.createBitmap在低内存时在有些手机上可能返回null，而不是抛OutofMemoryError。
+对于apk压缩包的操作应使用android自带的aapt，避免直接使用zip，直接使用zip会将apk里面的raw资源压缩，导致有些rom下读取raw文件失败。
+如果不给WebView设置WebViewClient，在有些手机上会自动跳到系统浏览器。
+在Androd 7.0上如果使用FLAG_ACTIVITY_REORDER_TO_FRONT来启动activity，快速连续点击不断启动activity时，可能会回到桌面。
+在MIUI10上通过Fragment的startActivity方法来启动activity，通过theme中windowAnimationStyle设置的进入动画会失效。</description>
+    </item>
+    
+    <item>
+      <title>Create avd and start app with command line</title>
+      <link>https://xjy2061.github.io/carina/post/create-avd-and-start-app-with-command-line/</link>
+      <pubDate>Tue, 21 Mar 2017 12:23:32 +0800</pubDate>
+      
+      <guid>https://xjy2061.github.io/carina/post/create-avd-and-start-app-with-command-line/</guid>
+      <description>Install sdk, create or delete avd android list sdk -a android update sdk -a -u --filter [id1, id2] android list targets android create avd -n 4.1-x86 -t 1 -b x86 -c 512M android delete avd -n 4.1-x86 Start emulator and launch app android list avd emulator64-x86 -avd 4.1-x86 -no-window -no-boot-anim -qemu -m 1024 -enable-kvm &amp;amp; adb shell am start fm.xiami.main/fm.xiami.bmamba.activity.StartActivity adb forward tcp:11874 tcp:11873 on 64-bits machines you may need install ia32-libs to run adb:</description>
+    </item>
+    
+    <item>
+      <title>VectorDrawable clip path</title>
+      <link>https://xjy2061.github.io/carina/post/vectordrawable-clip-path/</link>
+      <pubDate>Tue, 14 Mar 2017 11:54:56 +0800</pubDate>
+      
+      <guid>https://xjy2061.github.io/carina/post/vectordrawable-clip-path/</guid>
+      <description>Function clip path限制在画布上绘制的区域，在clip path所指定的区域外的位置不会被绘制。
+我们通过下面的心形图标来展示clip path的效果：
+&amp;lt;vector xmlns:android=&amp;#34;http://schemas.android.com/apk/res/android&amp;#34; android:width=&amp;#34;56dp&amp;#34; android:height=&amp;#34;56dp&amp;#34; android:viewportHeight=&amp;#34;56&amp;#34; android:viewportWidth=&amp;#34;56&amp;#34;&amp;gt; &amp;lt;path android:fillColor=&amp;#34;@android:color/black&amp;#34; android:pathData=&amp;#34;M28,39 L26.405,37.5667575 C20.74,32.4713896 17,29.1089918 17,24.9945504 C17,21.6321526 19.6565,19 23.05,19 C24.964,19 26.801,19.8828338 28,21.2724796 C29.199,19.8828338 31.036,19 32.95,19 C36.3435,19 39,21.6321526 39,24.9945504 C39,29.1089918 35.26,32.4713896 29.595,37.5667575 L28,39 L28,39 Z&amp;#34;/&amp;gt; &amp;lt;/vector&amp;gt; Figure1 心形图标
+下面加入&amp;lt;clip-path&amp;gt;将绘制区域限制在[0, 0, 56, 28]的矩形区域内：
+&amp;lt;vector xmlns:android=&amp;#34;http://schemas.android.com/apk/res/android&amp;#34; android:width=&amp;#34;56dp&amp;#34; android:height=&amp;#34;56dp&amp;#34; android:viewportHeight=&amp;#34;56&amp;#34; android:viewportWidth=&amp;#34;56&amp;#34;&amp;gt; &amp;lt;clip-path android:name=&amp;#34;clip&amp;#34; android:pathData=&amp;#34;M0 0 L56 0 L56 28 L0 28 Z&amp;#34;/&amp;gt; &amp;lt;path android:fillColor=&amp;#34;@android:color/black&amp;#34; android:pathData=&amp;#34;M28,39 L26.405,37.5667575 C20.74,32.4713896 17,29.1089918 17,24.9945504 C17,21.6321526 19.6565,19 23.</description>
+    </item>
+    
+  </channel>
+</rss>
