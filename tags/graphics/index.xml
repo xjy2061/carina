@@ -1,27 +1,21 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Graphics on Carina</title>
-    <link>https://xjy2061.github.io/carina/tags/graphics/index.xml</link>
-    <description>Recent content in Graphics on Carina</description>
+    <title>graphics on Carina</title>
+    <link>https://xjy2061.github.io/carina/tags/graphics/</link>
+    <description>Recent content in graphics on Carina</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <atom:link href="https://xjy2061.github.io/carina/tags/graphics/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Wed, 26 Sep 2018 10:50:10 +0800</lastBuildDate><atom:link href="https://xjy2061.github.io/carina/tags/graphics/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Android graphics tips</title>
-      <link>https://xjy2061.github.io/carina/note/Android-graphics-tips/</link>
+      <link>https://xjy2061.github.io/carina/note/android-graphics-tips/</link>
       <pubDate>Wed, 26 Sep 2018 10:50:10 +0800</pubDate>
       
-      <guid>https://xjy2061.github.io/carina/note/Android-graphics-tips/</guid>
-      <description>&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;如果给&lt;code&gt;Paint&lt;/code&gt;同时设置了shader和color，会优先使用shader的颜色，例如&lt;code&gt;drawText&lt;/code&gt;时，文字颜色是shader的颜色，而非color所指定的颜色。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;虽然官方文档表明开启硬件加速时，只要&lt;code&gt;ComposeShader&lt;/code&gt;里包含的shader是不同的类型且不是&lt;code&gt;ComposeShader&lt;/code&gt;，那么在api 28以下也可以使用&lt;code&gt;ComposeShader&lt;/code&gt;，但实际测试结果是只有关闭硬件加速&lt;code&gt;ComposeShader&lt;/code&gt;才起作用。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;如果给&lt;code&gt;Paint&lt;/code&gt;设置了&lt;strong&gt;PathEffect&lt;/strong&gt;，path的FillType是&lt;strong&gt;EVEN_ODD&lt;/strong&gt;时会失效。&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
+      <guid>https://xjy2061.github.io/carina/note/android-graphics-tips/</guid>
+      <description>如果给Paint同时设置了shader和color，会优先使用shader的颜色，例如drawText时，文字颜色是shader的颜色，而非color所指定的颜色。
+虽然官方文档表明开启硬件加速时，只要ComposeShader里包含的shader是不同的类型且不是ComposeShader，那么在api 28以下也可以使用ComposeShader，但实际测试结果是只有关闭硬件加速ComposeShader才起作用。
+如果给Paint设置了PathEffect，path的FillType是EVEN_ODD时会失效。</description>
     </item>
     
   </channel>

@@ -1,568 +1,95 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Carina</title>
-    <link>https://xjy2061.github.io/carina/post/index.xml</link>
+    <link>https://xjy2061.github.io/carina/post/</link>
     <description>Recent content in Posts on Carina</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 30 Nov 2019 20:55:09 +0800</lastBuildDate>
-    <atom:link href="https://xjy2061.github.io/carina/post/index.xml" rel="self" type="application/rss+xml" />
-    
+    <lastBuildDate>Sat, 30 Nov 2019 20:55:09 +0800</lastBuildDate><atom:link href="https://xjy2061.github.io/carina/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Webp解码RGB_565问题记录</title>
-      <link>https://xjy2061.github.io/carina/post/Webp%E8%A7%A3%E7%A0%81RGB_565%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/</link>
+      <link>https://xjy2061.github.io/carina/post/webp%E8%A7%A3%E7%A0%81rgb_565%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/</link>
       <pubDate>Sat, 30 Nov 2019 20:55:09 +0800</pubDate>
       
-      <guid>https://xjy2061.github.io/carina/post/Webp%E8%A7%A3%E7%A0%81RGB_565%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/</guid>
-      <description>&lt;p&gt;最近遇到自定义webp解码使用rgb565时出现颜色错乱的问题，查了比较长时间，总结一下过程。&lt;/p&gt;
-
-&lt;p&gt;开始时怀疑代码逻辑有问题，于是写demo测试native代码逻辑，尝试修改&lt;code&gt;Bitmap&lt;/code&gt;的一些属性，确认代码逻辑正确。&lt;/p&gt;
-
-&lt;p&gt;然后考虑到用系统解码api和官方ndk sample中的webp解码示例都正常，怀疑是不是对&lt;strong&gt;libwebp&lt;/strong&gt;的调用方式有问题，于是去看源码。先从简单的ndk sample开始看，发现调用方式是一样的，然后看了系统webp解码部分源码，发现系统使用的解码函数不一样，尝试换成跟系统一样的函数，问题依然存在。由于官方示例并没有将图片解码成&lt;code&gt;Bitmap&lt;/code&gt;，所以接着仔细看系统源码的解码过程，看是不是在某些细节里有特殊处理，最后没有发现有特殊的地方。&lt;/p&gt;
-
-&lt;p&gt;看了几天源码无果后，最后想到是不是解码得到的&lt;code&gt;Bitmap&lt;/code&gt;的底层像素数据不一样，而不是对&lt;code&gt;Bitmap&lt;/code&gt;的设置不一样，于是写测试代码获取&lt;code&gt;Bitmap&lt;/code&gt;的像素字节数组，对2种方式解码得到的&lt;code&gt;Bitmap&lt;/code&gt;的像素数据进行比较，发现同一像素的2个字节的位置刚好相反。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[74, 105, -125, -18, ...]
-
-[105, 74, -18, -125, ...]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;到这里终于有点眉目了，后面就去找导致位置相反的原因，然后在&lt;strong&gt;libwebp&lt;/strong&gt;源码定义像素格式的地方发现了一段注释，感觉很可能跟&lt;code&gt;WEBP_SWAP_16BITS_CSP&lt;/code&gt;有关，但在代码中没有找到这个变量。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-c++&#34;&gt;// ...
-// RGB-565: [r4 r3 r2 r1 r0 g5 g4 g3], [g2 g1 g0 b4 b3 b2 b1 b0], ...
-// In the case WEBP_SWAP_16BITS_CSP is defined, the bytes are swapped for
-// these two modes:
-// RGBA-4444: [b3 b2 b1 b0 a3 a2 a1 a0], [r3 r2 r1 r0 g3 g2 g1 g0], ...
-// RGB-565: [g2 g1 g0 b4 b3 b2 b1 b0], [r4 r3 r2 r1 r0 g5 g4 g3], ...
-
-typedef enum WEBP_CSP_MODE {
-  // ...
-  MODE_RGB_565 = 6,
-  // ...
-} WEBP_CSP_MODE;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;最后怀疑&lt;code&gt;WEBP_SWAP_16BITS_CSP&lt;/code&gt;是在编译时指定的，后来终于在官方示例工程的&lt;strong&gt;CMakeLists&lt;/strong&gt;文件和系统源码的&lt;strong&gt;libwebp&lt;/strong&gt;编译配置中找到了它的踪迹。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-cmake&#34;&gt;# CMakeList.txt
-if(WEBP_ENABLE_SWAP_16BIT_CSP)
-  add_definitions(-DWEBP_SWAP_16BIT_CSP=1)
-endif()
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-mk&#34;&gt;# Android.bp
-cflags: [
-    &amp;quot;-O2&amp;quot;,
-    &amp;quot;-DANDROID&amp;quot;,
-    &amp;quot;-DWEBP_SWAP_16BIT_CSP&amp;quot;,
-    &amp;quot;-Wall&amp;quot;,
-    &amp;quot;-Werror&amp;quot;,
- ],
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;到这里问题原因已基本查明，然后修改图片库&lt;strong&gt;libwebp&lt;/strong&gt;编译配置，打包验证，使用&lt;code&gt;RGB_565&lt;/code&gt;解码的图片正常显示了。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-mk&#34;&gt;WEBP_CFLAGS := -Wall -DANDROID -DHAVE_MALLOC_H -DHAVE_PTHREAD -DWEBP_USE_THREAD -DWEBP_FORCE_ALIGNED -DWEBP_SWAP_16BIT_CSP
-&lt;/code&gt;&lt;/pre&gt;
-</description>
+      <guid>https://xjy2061.github.io/carina/post/webp%E8%A7%A3%E7%A0%81rgb_565%E9%97%AE%E9%A2%98%E8%AE%B0%E5%BD%95/</guid>
+      <description>最近遇到自定义webp解码使用rgb565时出现颜色错乱的问题，查了比较长时间，总结一下过程。
+开始时怀疑代码逻辑有问题，于是写demo测试native代码逻辑，尝试修改Bitmap的一些属性，确认代码逻辑正确。
+然后考虑到用系统解码api和官方ndk sample中的webp解码示例都正常，怀疑是不是对libwebp的调用方式有问题，于是去看源码。先从简单的ndk sample开始看，发现调用方式是一样的，然后看了系统webp解码部分源码，发现系统使用的解码函数不一样，尝试换成跟系统一样的函数，问题依然存在。由于官方示例并没有将图片解码成Bitmap，所以接着仔细看系统源码的解码过程，看是不是在某些细节里有特殊处理，最后没有发现有特殊的地方。
+看了几天源码无果后，最后想到是不是解码得到的Bitmap的底层像素数据不一样，而不是对Bitmap的设置不一样，于是写测试代码获取Bitmap的像素字节数组，对2种方式解码得到的Bitmap的像素数据进行比较，发现同一像素的2个字节的位置刚好相反。
+[74, 105, -125, -18, ...] [105, 74, -18, -125, ...] 到这里终于有点眉目了，后面就去找导致位置相反的原因，然后在libwebp源码定义像素格式的地方发现了一段注释，感觉很可能跟WEBP_SWAP_16BITS_CSP有关，但在代码中没有找到这个变量。
+// ... // RGB-565: [r4 r3 r2 r1 r0 g5 g4 g3], [g2 g1 g0 b4 b3 b2 b1 b0], ... // In the case WEBP_SWAP_16BITS_CSP is defined, the bytes are swapped for // these two modes: // RGBA-4444: [b3 b2 b1 b0 a3 a2 a1 a0], [r3 r2 r1 r0 g3 g2 g1 g0], .</description>
     </item>
     
     <item>
       <title>Android task</title>
-      <link>https://xjy2061.github.io/carina/post/Android-task/</link>
+      <link>https://xjy2061.github.io/carina/post/android-task/</link>
       <pubDate>Sun, 24 Sep 2017 14:44:33 +0800</pubDate>
       
-      <guid>https://xjy2061.github.io/carina/post/Android-task/</guid>
-      <description>
-
-&lt;h2 id=&#34;singletask-and-flag-activity-new-task&#34;&gt;&lt;code&gt;singleTask&lt;/code&gt; and &lt;code&gt;FLAG_ACTIVITY_NEW_TASK&lt;/code&gt;&lt;/h2&gt;
-
-&lt;p&gt;根据下面引用的官方文档的说法，&lt;code&gt;singleTask&lt;/code&gt;和&lt;code&gt;FLAG_ACTIVITY_NEW_TASK&lt;/code&gt;的行为是一致的，但是根据实际测试结果，二者的行为是有差别的。&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;This produces the same behavior as the &amp;ldquo;singleTask&amp;rdquo; launchMode value, discussed in the previous section.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;二者在决定activity属于哪个task上是一致的，都根据&lt;code&gt;taskAffinity&lt;/code&gt;（如果没设，默认为包名）来决定activity属于哪个task，如果当前存在一个名称跟&lt;code&gt;taskAffinity&lt;/code&gt;相同的task，则将activity置于已有的这个task，否则创建一个新task，并将activity作为这个task的根activity。&lt;/p&gt;
-
-&lt;p&gt;二者在启动activity的行为上是不一致的，如果activity所属的task已存在且task中已存在这个activity的实例，二者都会将整个task移到前台，但&lt;code&gt;singleTask&lt;/code&gt;会关闭这个activity上面的所有activity，并调用这个activity的&lt;code&gt;onNewIntent&lt;/code&gt;方法，而对于&lt;code&gt;FLAG_ACTIVITY_NEW_TASK&lt;/code&gt;，如果启动的activity是这个task的根activity，不做任何事情，否则会创建一个新的activity。&lt;/p&gt;
-
-&lt;h2 id=&#34;exported-activity&#34;&gt;Exported activity&lt;/h2&gt;
-
-&lt;p&gt;启动其他app的exported activity时，会忽略&lt;code&gt;launchMode&lt;/code&gt;，此时只能用&lt;code&gt;FLAG_ACTIVITY_NEW_TASK&lt;/code&gt;来创建新task。&lt;/p&gt;
-
-&lt;h2 id=&#34;startactivityforresult&#34;&gt;&lt;code&gt;startActivityForResult&lt;/code&gt;&lt;/h2&gt;
-
-&lt;p&gt;调用&lt;code&gt;startActivityForResult&lt;/code&gt;来启动activity时，如果使用了&lt;code&gt;FLAG_ACTIVITY_NEW_TASK&lt;/code&gt;，启动activity后会立即收到&lt;code&gt;onActivityResult&lt;/code&gt;回调，且finish启动的activity后不会再收到&lt;code&gt;onActivityResult&lt;/code&gt;回调，而使用&lt;code&gt;singleTask&lt;/code&gt;和&lt;code&gt;singleInstance&lt;/code&gt;则是正常的行为。&lt;/p&gt;
-</description>
+      <guid>https://xjy2061.github.io/carina/post/android-task/</guid>
+      <description>singleTask and FLAG_ACTIVITY_NEW_TASK 根据下面引用的官方文档的说法，singleTask和FLAG_ACTIVITY_NEW_TASK的行为是一致的，但是根据实际测试结果，二者的行为是有差别的。
+This produces the same behavior as the &amp;ldquo;singleTask&amp;rdquo; launchMode value, discussed in the previous section.
+二者在决定activity属于哪个task上是一致的，都根据taskAffinity（如果没设，默认为包名）来决定activity属于哪个task，如果当前存在一个名称跟taskAffinity相同的task，则将activity置于已有的这个task，否则创建一个新task，并将activity作为这个task的根activity。
+二者在启动activity的行为上是不一致的，如果activity所属的task已存在且task中已存在这个activity的实例，二者都会将整个task移到前台，但singleTask会关闭这个activity上面的所有activity，并调用这个activity的onNewIntent方法，而对于FLAG_ACTIVITY_NEW_TASK，如果启动的activity是这个task的根activity，不做任何事情，否则会创建一个新的activity。
+Exported activity 启动其他app的exported activity时，会忽略launchMode，此时只能用FLAG_ACTIVITY_NEW_TASK来创建新task。
+startActivityForResult 调用startActivityForResult来启动activity时，如果使用了FLAG_ACTIVITY_NEW_TASK，启动activity后会立即收到onActivityResult回调，且finish启动的activity后不会再收到onActivityResult回调，而使用singleTask和singleInstance则是正常的行为。</description>
     </item>
     
     <item>
       <title>Android memory leak</title>
-      <link>https://xjy2061.github.io/carina/post/Android-memory-leak/</link>
+      <link>https://xjy2061.github.io/carina/post/android-memory-leak/</link>
       <pubDate>Sun, 10 Sep 2017 20:09:00 +0800</pubDate>
       
-      <guid>https://xjy2061.github.io/carina/post/Android-memory-leak/</guid>
-      <description>
-
-&lt;h2 id=&#34;leak-because-of-system-bug&#34;&gt;Leak because of system bug&lt;/h2&gt;
-
-&lt;h3 id=&#34;phonestatelistener-leak&#34;&gt;&lt;code&gt;PhoneStateListener&lt;/code&gt; leak&lt;/h3&gt;
-
-&lt;p&gt;Below 7.0 a non static inner class &lt;code&gt;IPhoneStateListener.Stub&lt;/code&gt; callback in &lt;code&gt;PhoneStateListener&lt;/code&gt; references to outside &lt;code&gt;PhoneStateListener&lt;/code&gt;, even caller has been destroyed and &amp;ldquo;un-registered&amp;rdquo; the &lt;code&gt;PhoneStateListener&lt;/code&gt;, the references coming from: Native Stack &amp;ndash;&amp;gt; PhoneStateListener &amp;ndash;&amp;gt; Context(Activity).&lt;/p&gt;
-
-&lt;p&gt;A wrapper class wraps a weak reference of &lt;code&gt;PhoneStateListener&lt;/code&gt; can be used to avoid this memory leak.&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;Caution: The original &lt;code&gt;PhoneStateListener&lt;/code&gt; object must be referenced by caller class, otherwise the weak reference in the wrapper class will get &lt;code&gt;null&lt;/code&gt;.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public class PhoneStateListenerWrapper extends PhoneStateListener {
-    private WeakReference&amp;lt;PhoneStateListener&amp;gt; mPhoneStateListenerRef;
-
-    public PhoneStateListenerWrapper(PhoneStateListener phoneStateListener) {
-        mPhoneStateListenerRef = new WeakReference&amp;lt;&amp;gt;(phoneStateListener);
-    }
-
-    @Override
-    public void onCallStateChanged(int state, String incomingNumber) {
-        super.onCallStateChanged(state, incomingNumber);
-        PhoneStateListener phoneStateListener = mPhoneStateListenerRef.get();
-        if (phoneStateListener != null) {
-            phoneStateListener.onCallStateChanged(state, incomingNumber);
-        }
-    }
-}
-
-private PhoneStateListener mPhoneStateListener = new PhoneStateListener() {
-    @Override
-    public void onCallStateChanged(int state, String incomingNumber) {
-        super.onCallStateChanged(state, incomingNumber);
-        //...
-    }
-};
-private PhoneStateListenerWrapper mPhoneStateListenerWrapper = new PhoneStateListenerWrapper(mPhoneStateListener);
-
-((TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE)).listen(mPhoneStateListenerWrapper, PhoneStateListener.LISTEN_CALL_STATE);
-((TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE)).listen(mPhoneStateListenerWrapper, PhoneStateListener.LISTEN_NONE);
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;audiomanager-leak&#34;&gt;&lt;code&gt;AudioManager&lt;/code&gt; leak&lt;/h3&gt;
-
-&lt;p&gt;Below 6.0 &lt;code&gt;AudioManager&lt;/code&gt; reference to the incoming context of constructor directly, the related issue is &lt;a href=&#34;https://issuetracker.google.com/issues/37024105&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;A simple workaround is using &lt;code&gt;Application&lt;/code&gt; context to get &lt;code&gt;AudioManager&lt;/code&gt;.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;mAudioManager = (AudioManager) context.getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;inputmethodmanager-leak&#34;&gt;&lt;code&gt;InputMethodManager&lt;/code&gt; leak&lt;/h3&gt;
-
-&lt;p&gt;Refer to &lt;a href=&#34;https://issuetracker.google.com/issues/37043700&#34;&gt;issue 37043700&lt;/a&gt; and &lt;a href=&#34;https://issuetracker.google.com/issues/37090736&#34;&gt;issue 37090736&lt;/a&gt;, &lt;code&gt;mCurRootView&lt;/code&gt; or &lt;code&gt;mServedView&lt;/code&gt; or &lt;code&gt;mNextServedView&lt;/code&gt; in &lt;code&gt;InputMethodManager&lt;/code&gt; may reference to last focused view on a wide system version range. But I have not found this kind of leak in official system. However, &lt;code&gt;mLastSrvView&lt;/code&gt; of &lt;code&gt;InputMethodManager&lt;/code&gt; may cause leak on huawei 6.0 and above device, and &lt;code&gt;mLastSrvView&lt;/code&gt; field is not found in official source code, I think this is a leak for certain manufacturer.&lt;/p&gt;
-
-&lt;p&gt;To fix this kind of leak, a straight way is set the relative field of &lt;code&gt;InputMethodManager&lt;/code&gt; to &lt;code&gt;null&lt;/code&gt; when activity destroyed. Considering there may be multiple activities have this leak, a better way is fix this leak in the &lt;code&gt;onActivityDestroyed(Activity activity)&lt;/code&gt; method of &lt;code&gt;ActivityLifecycleCallbacks&lt;/code&gt;.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;@Override
-public void onActivityDestroyed(Activity activity) {
-    MemoryLeakFixer.fixInputMethodManagerLeak(activity);
-}
-
-public class MemoryLeakFixer {
-
-    public static void fixInputMethodManagerLeak(Activity activity) {
-        //Surround with a appropriate if condition to make sure execute fix when leak real exists is better.
-        InputMethodManager inputMethodManager = null;
-        try {
-            inputMethodManager = (InputMethodManager) activity.getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        } catch (Throwable t) {
-            t.printStackTrace();
-        }
-        if (inputMethodManager!= null) {
-            String[] fieldNames = new String[]{&amp;quot;mCurRootView&amp;quot;, &amp;quot;mServedView&amp;quot;, &amp;quot;mNextServedView&amp;quot;, &amp;quot;mLastSrvView&amp;quot;/*huawei*/};
-            Class clazz = inputMethodManager.getClass();
-            for (String fieldName : fieldNames) {
-                try {
-                    Field field = clazz.getDeclaredField(fieldName);
-                    if (field != null) {
-                        if (!field.isAccessible()) {
-                            field.setAccessible(true);
-                        }
-                        Object obj = field.get(inputMethodManager);
-                        if (obj instanceof View) {
-                            View view = (View) obj;
-                            if (view.getContext() == activity) {
-                                field.set(inputMethodManager, null);
-                            }
-                        }
-                    }
-                } catch (Throwable t) {
-                    t.printStackTrace();
-                }
-            }
-        }
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h3 id=&#34;textline-leak&#34;&gt;&lt;code&gt;TextLine&lt;/code&gt; leak&lt;/h3&gt;
-
-&lt;p&gt;An activity context may be referenced by &lt;code&gt;sCached&lt;/code&gt; in &lt;code&gt;TextLine&lt;/code&gt;, a simple solution is set every element of &lt;code&gt;sCached&lt;/code&gt; to &lt;code&gt;null&lt;/code&gt; in activity&amp;rsquo;s &lt;code&gt;onDestroy&lt;/code&gt; method.&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;public static void fixTextLineLeak() {
-    try {
-        Field field = Class.forName(&amp;quot;android.text.TextLine&amp;quot;).getDeclaredField(&amp;quot;sCached&amp;quot;);
-        field.setAccessible(true);
-        Object[] sCached = (Object[]) field.get(null);
-        if (sCached != null) {
-            for (int i = 0; i &amp;lt; sCached.length; i++) {
-                sCached[i] = null;
-            }
-        }
-    } catch (Throwable t) {
-        t.printStackTrace();
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;leak-because-of-misuse&#34;&gt;Leak because of misuse&lt;/h2&gt;
-
-&lt;h3 id=&#34;unremoved-viewtreeobserver-listener-leak&#34;&gt;Unremoved &lt;code&gt;ViewTreeObserver&lt;/code&gt; listener leak&lt;/h3&gt;
-
-&lt;p&gt;The scenario is after create a new item view for a &lt;code&gt;ViewPager&lt;/code&gt; by the &lt;code&gt;instantiateItem&lt;/code&gt; method of &lt;code&gt;PageAdapter&lt;/code&gt;, a listener reference to the item view indirectly have been add to the &lt;code&gt;ViewTreeObserver&lt;/code&gt; of the item view, and the listener never be removed from the &lt;code&gt;ViewTreeObserver&lt;/code&gt;, cause the item view leak even the view has been removed from the view hierarchy in the &lt;code&gt;destroyItem&lt;/code&gt; method of &lt;code&gt;PageAdapter&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;Never forgot remove listeners from &lt;code&gt;ViewTreeObserver&lt;/code&gt;.&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-java&#34;&gt;final ViewTreeObserver observer = view.getViewTreeObserver();
-if (observer != null) {
-    observer.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-        @Override
-        public void onGlobalLayout() {
-            //do something
-            if (Build.VERSION.SDK_INT &amp;gt;= Build.VERSION_CODES.JELLY_BEAN) {
-                observer.removeOnGlobalLayoutListener(this);
-            } else {
-                observer.removeGlobalOnLayoutListener(this);
-            }
-        }
-    });
-}
-&lt;/code&gt;&lt;/pre&gt;
-</description>
+      <guid>https://xjy2061.github.io/carina/post/android-memory-leak/</guid>
+      <description>Leak because of system bug PhoneStateListener leak Below 7.0 a non static inner class IPhoneStateListener.Stub callback in PhoneStateListener references to outside PhoneStateListener, even caller has been destroyed and &amp;ldquo;un-registered&amp;rdquo; the PhoneStateListener, the references coming from: Native Stack &amp;ndash;&amp;gt; PhoneStateListener &amp;ndash;&amp;gt; Context(Activity).
+A wrapper class wraps a weak reference of PhoneStateListener can be used to avoid this memory leak.
+Caution: The original PhoneStateListener object must be referenced by caller class, otherwise the weak reference in the wrapper class will get null.</description>
     </item>
     
     <item>
       <title>Android Studio 3.0 Device File Explorer &amp; Fonts</title>
-      <link>https://xjy2061.github.io/carina/post/Android%20Studio%203.0%20Device%20File%20Explorer%20&amp;%20Fonts/</link>
+      <link>https://xjy2061.github.io/carina/post/android-studio-3.0-device-file-explorer-fonts/</link>
       <pubDate>Sun, 09 Jul 2017 15:13:05 +0800</pubDate>
       
-      <guid>https://xjy2061.github.io/carina/post/Android%20Studio%203.0%20Device%20File%20Explorer%20&amp;%20Fonts/</guid>
-      <description>
-
-&lt;h2 id=&#34;device-file-explorer&#34;&gt;Device File Explorer&lt;/h2&gt;
-
-&lt;p&gt;使用设备的文件系统，可按如下的操作方式：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;点击&lt;strong&gt;View &amp;gt; Tool Windows &amp;gt; Device File Explorer&lt;/strong&gt;或者点击右下角位于工具窗口条中的&lt;strong&gt;Device File Explorer&lt;/strong&gt;按钮来打开Device File Explorer。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;从上方的下拉列表中选择设备。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;在文件浏览窗口中操作设备文件。鼠标右键点击文件或目录来创建一个新文件或目录，保存现在的文件或目录到电脑中，上传、删除或同步文件。鼠标双击文件可以在Android Studio中打开文件。&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：Android Studio 将用 Device File Explorer 打开的文件保存在工程外的临时目录中，如果在 Device File Explorer 中修改文件，并想把修改保存到设备中，需要手动将修改的文件上传到设备中。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;img src=&#34;device-file-explorer.png&#34; alt=&#34;Device File Explorer&#34; /&gt;&lt;br /&gt;
-&lt;strong&gt;Figure1&lt;/strong&gt; Device File Explorer窗口&lt;/p&gt;
-
-&lt;p&gt;当浏览设备文件时，以下2个目录是经常访问的：&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;data/data/app_name/&lt;/strong&gt;：包含存储于内部存储空间的应用数据文件&lt;/p&gt;
-
-&lt;p&gt;&lt;strong&gt;sdcard/&lt;/strong&gt;：包含存储于外部存储空间的用户文件&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：不是所有的文件都在Device File Explorer中可见。例如在&lt;strong&gt;data/data/&lt;/strong&gt;目录中，非debuggable应用的文件是不能展开的。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h2 id=&#34;xml-fonts-downloadable-fonts&#34;&gt;XML Fonts &amp;amp; Downloadable Fonts&lt;/h2&gt;
-
-&lt;p&gt;Android O 引入了XML字体新特性，可以将字体作为资源使用。&lt;/p&gt;
-
-&lt;h3 id=&#34;xml-fonts&#34;&gt;XML Fonts&lt;/h3&gt;
-
-&lt;p&gt;Android O 可以通过将字体文件加入&lt;strong&gt;res/font&lt;/strong&gt;目录来将字体作为资源使用。这些字体会被编译到R文件中，并在 Android Studio 中可用。可以通过新的资源类型&lt;strong&gt;font&lt;/strong&gt;来访问字体资源，例如用&lt;code&gt;@font/myfont&lt;/code&gt;或者&lt;code&gt;R.font.myfont&lt;/code&gt;来访问一个字体资源。&lt;/p&gt;
-
-&lt;p&gt;在 Android Studio 中可以通过执行以下步骤来字体资源：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;鼠标右键点击&lt;strong&gt;res&lt;/strong&gt;目录，选择&lt;strong&gt;New &amp;gt; Android Resource Directory&lt;/strong&gt;，打开&lt;strong&gt;New Resource Directory&lt;/strong&gt;窗口。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;在&lt;strong&gt;Resource type&lt;/strong&gt;列表里选择&lt;strong&gt;font&lt;/strong&gt;，然后点击&lt;strong&gt;OK&lt;/strong&gt;。&lt;br /&gt;
-&lt;img src=&#34;add-font-directory.png&#34; alt=&#34;Add font directory&#34; /&gt;&lt;br /&gt;
-&lt;strong&gt;Figure2&lt;/strong&gt; 添加字体目录&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;添加字体文件到&lt;strong&gt;font&lt;/strong&gt;目录中。&lt;br /&gt;
-&lt;img src=&#34;add-font-files.png&#34; alt=&#34;Add font files&#34; /&gt;&lt;br /&gt;
-&lt;strong&gt;Figure3&lt;/strong&gt; 添加字体文件到资源目录&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;双击字体文件预览字体。&lt;br /&gt;
-&lt;img src=&#34;preview-font-file.png&#34; alt=&#34;Preview font file&#34; /&gt;&lt;br /&gt;
-&lt;strong&gt;Figure4&lt;/strong&gt; 预览字体文件&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&#34;创建-font-family&#34;&gt;创建 font family&lt;/h4&gt;
-
-&lt;p&gt;font family 是一个包含多个字体文件以及它们的style和weight信息的xml文件，font family 可以作为一个单元来访问。&lt;/p&gt;
-
-&lt;p&gt;通过以下步骤在 Android Studio 中创建一个 font family：&lt;/p&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;鼠标右键点击&lt;strong&gt;font&lt;/strong&gt;目录，选择&lt;strong&gt;New &amp;gt; Font resource file&lt;/strong&gt;，打开&lt;strong&gt;New Resource File&lt;/strong&gt;窗口。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;输入文件名，然后点击&lt;strong&gt;OK&lt;/strong&gt;，一个新的字体资源xml文件将被打开在编辑器中。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;给&lt;code&gt;&amp;lt;font&amp;gt;&lt;/code&gt;元素加入字体文件、style和weight等属性。下面是添加了字体相关属性后的字体资源xml的例子：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-xml&#34;&gt;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;utf-8&amp;quot;?&amp;gt;
-&amp;lt;font-family xmlns:android=&amp;quot;http://schemas.android.com/apk/res/android&amp;quot;&amp;gt;
-&amp;lt;font
-    android:fontStyle=&amp;quot;normal&amp;quot;
-    android:fontWeight=&amp;quot;400&amp;quot;
-    android:font=&amp;quot;@font/lobster_regular&amp;quot; /&amp;gt;
-&amp;lt;font
-    android:fontStyle=&amp;quot;italic&amp;quot;
-    android:fontWeight=&amp;quot;400&amp;quot;
-    android:font=&amp;quot;@font/lobster_italic&amp;quot; /&amp;gt;
-&amp;lt;/font-family&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h4 id=&#34;在-xml-layouts-中使用字体&#34;&gt;在 xml layouts 中使用字体&lt;/h4&gt;
-
-&lt;p&gt;可以通过&lt;code&gt;fontFamily&lt;/code&gt;属性将单个字体文件或 font family 中的字体绑定到&lt;code&gt;TextView&lt;/code&gt;。&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：当使用 font family 时，&lt;code&gt;TextView&lt;/code&gt;将自动根据需要从 font family 中选择字体文件。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;给&lt;code&gt;TextView&lt;/code&gt;设置字体可以用如下任一方式：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;打开 layout xml 文件，给&lt;code&gt;fontFamily&lt;/code&gt;属性设置字体文件。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-xml&#34;&gt;&amp;lt;TextView
-    android:layout_width=&amp;quot;wrap_content&amp;quot;
-    android:layout_height=&amp;quot;wrap_content&amp;quot;
-    android:fontFamily=&amp;quot;@font/lobster&amp;quot;/&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;在 layout 文件的 design 编辑器中选择&lt;code&gt;TextView&lt;/code&gt;打开属性窗口，展开&lt;code&gt;textAppearance&lt;/code&gt;属性，从&lt;code&gt;fontFamily&lt;/code&gt;列表中选择字体。&lt;br /&gt;
-&lt;img src=&#34;select-font.png&#34; alt=&#34;Select font&#34; /&gt;&lt;br /&gt;
-&lt;strong&gt;Figure5&lt;/strong&gt; 在属性窗口中选择字体&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&#34;downloadable-fonts&#34;&gt;Downloadable fonts&lt;/h3&gt;
-
-&lt;p&gt;Android O 和 Android Support Library 26 引入了从&lt;code&gt;provider&lt;/code&gt;请求字体的api，从而不需要集成字体文件到apk或者让apk下载字体文件。&lt;/p&gt;
-
-&lt;p&gt;使用 Downloadable Fonts 特性三种方式：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;通过 Android Studio 和 Google Play Service&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;通过编码实现&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;通过 support library&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4 id=&#34;通过-android-studio-和-google-play-services-使用-downloadable-fonts&#34;&gt;通过 Android Studio 和 Google Play Services 使用 Downloadable Fonts&lt;/h4&gt;
-
-&lt;p&gt;在 Android Studio 3.0 中，可以使用 Google Play Services 的 font provider 来给应用设置下载字体。&lt;/p&gt;
-
-&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;注意&lt;/strong&gt;：使用 Google Fonts Provider 要求设备中的 Google Play Services 版本大于等于11。&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;在&lt;strong&gt;Layout Editor&lt;/strong&gt;中选择一个&lt;code&gt;TextView&lt;/code&gt;，在打开的属性窗口中选择&lt;strong&gt;fontFamily &amp;gt; More Fonts&lt;/strong&gt;，打开&lt;strong&gt;Resources&lt;/strong&gt;窗口。&lt;br /&gt;
-&lt;img src=&#34;using-layout-editor.png&#34; alt=&#34;Using layout editor&#34; /&gt;&lt;br /&gt;
-&lt;strong&gt;Figure6&lt;/strong&gt; 使用 layout editor&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;在&lt;strong&gt;Source&lt;/strong&gt;下拉列表中选择&lt;strong&gt;Google Fonts&lt;/strong&gt;。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;在&lt;strong&gt;Fonts&lt;/strong&gt;列表中选择一个字体。&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;选择&lt;strong&gt;Create downloadable font&lt;/strong&gt;并点击&lt;strong&gt;OK&lt;/strong&gt;。&lt;br /&gt;
-&lt;img src=&#34;select-font-from-resources-window.png&#34; alt=&#34;Select font from resources window&#34; /&gt;&lt;br /&gt;
-&lt;strong&gt;Figure7&lt;/strong&gt; 从 Resources 窗口中选择字体&lt;/p&gt;&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;Android Studio 会自动生成相应的 xml 文件。&lt;br /&gt;
-&lt;img src=&#34;font-file.png&#34; alt=&#34;Font file&#34; /&gt;&lt;br /&gt;
-&lt;strong&gt;Figure8&lt;/strong&gt; 生成的字体 xml 文件&lt;/p&gt;
-
-&lt;h4 id=&#34;其他使用-downloadable-fonts-的方式&#34;&gt;其他使用 Downloadable Fonts 的方式&lt;/h4&gt;
-
-&lt;p&gt;通过编码实现和通过 support library 的方式不涉及 Android Studio 本身，可参考链接：&lt;a href=&#34;https://developer.android.com/preview/features/downloadable-fonts.html&#34;&gt;Downloadable Fonts&lt;/a&gt;。&lt;/p&gt;
-</description>
+      <guid>https://xjy2061.github.io/carina/post/android-studio-3.0-device-file-explorer-fonts/</guid>
+      <description>Device File Explorer 使用设备的文件系统，可按如下的操作方式：
+点击View &amp;gt; Tool Windows &amp;gt; Device File Explorer或者点击右下角位于工具窗口条中的Device File Explorer按钮来打开Device File Explorer。
+从上方的下拉列表中选择设备。
+在文件浏览窗口中操作设备文件。鼠标右键点击文件或目录来创建一个新文件或目录，保存现在的文件或目录到电脑中，上传、删除或同步文件。鼠标双击文件可以在Android Studio中打开文件。
+注意：Android Studio 将用 Device File Explorer 打开的文件保存在工程外的临时目录中，如果在 Device File Explorer 中修改文件，并想把修改保存到设备中，需要手动将修改的文件上传到设备中。
+Figure1 Device File Explorer窗口
+当浏览设备文件时，以下2个目录是经常访问的：
+data/data/app_name/：包含存储于内部存储空间的应用数据文件
+sdcard/：包含存储于外部存储空间的用户文件
+注意：不是所有的文件都在Device File Explorer中可见。例如在**data/data/**目录中，非debuggable应用的文件是不能展开的。
+XML Fonts &amp;amp; Downloadable Fonts Android O 引入了XML字体新特性，可以将字体作为资源使用。
+XML Fonts Android O 可以通过将字体文件加入res/font目录来将字体作为资源使用。这些字体会被编译到R文件中，并在 Android Studio 中可用。可以通过新的资源类型font来访问字体资源，例如用@font/myfont或者R.font.myfont来访问一个字体资源。
+在 Android Studio 中可以通过执行以下步骤来字体资源：
+鼠标右键点击res目录，选择New &amp;gt; Android Resource Directory，打开New Resource Directory窗口。
+在Resource type列表里选择font，然后点击OK。
+Figure2 添加字体目录</description>
     </item>
     
     <item>
       <title>Create avd and start app with command line</title>
-      <link>https://xjy2061.github.io/carina/post/Create-avd-and-start-app-with-command-line/</link>
+      <link>https://xjy2061.github.io/carina/post/create-avd-and-start-app-with-command-line/</link>
       <pubDate>Tue, 21 Mar 2017 12:23:32 +0800</pubDate>
       
-      <guid>https://xjy2061.github.io/carina/post/Create-avd-and-start-app-with-command-line/</guid>
-      <description>
-
-&lt;h2 id=&#34;install-sdk-create-or-delete-avd&#34;&gt;Install sdk, create or delete avd&lt;/h2&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-shell&#34;&gt;android list sdk -a
-android update sdk -a -u --filter [id1, id2]
-
-android list targets
-android create avd -n 4.1-x86 -t 1 -b x86 -c 512M
-
-android delete avd -n 4.1-x86
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;start-emulator-and-launch-app&#34;&gt;Start emulator and launch app&lt;/h2&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-shell&#34;&gt;android list avd
-emulator64-x86 -avd 4.1-x86 -no-window -no-boot-anim -qemu -m 1024 -enable-kvm &amp;amp;
-
-adb shell am start fm.xiami.main/fm.xiami.bmamba.activity.StartActivity
-
-adb forward tcp:11874 tcp:11873
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;on 64-bits machines you may need install ia32-libs to run adb:&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-shell&#34;&gt;sudo apt-get install ia32-libs
-&lt;/code&gt;&lt;/pre&gt;
-</description>
+      <guid>https://xjy2061.github.io/carina/post/create-avd-and-start-app-with-command-line/</guid>
+      <description>Install sdk, create or delete avd android list sdk -a android update sdk -a -u --filter [id1, id2] android list targets android create avd -n 4.1-x86 -t 1 -b x86 -c 512M android delete avd -n 4.1-x86 Start emulator and launch app android list avd emulator64-x86 -avd 4.1-x86 -no-window -no-boot-anim -qemu -m 1024 -enable-kvm &amp;amp; adb shell am start fm.xiami.main/fm.xiami.bmamba.activity.StartActivity adb forward tcp:11874 tcp:11873 on 64-bits machines you may need install ia32-libs to run adb:</description>
     </item>
     
     <item>
       <title>VectorDrawable clip path</title>
-      <link>https://xjy2061.github.io/carina/post/VectorDrawable-clip-path/</link>
+      <link>https://xjy2061.github.io/carina/post/vectordrawable-clip-path/</link>
       <pubDate>Tue, 14 Mar 2017 11:54:56 +0800</pubDate>
       
-      <guid>https://xjy2061.github.io/carina/post/VectorDrawable-clip-path/</guid>
-      <description>
-
-&lt;h2 id=&#34;function&#34;&gt;Function&lt;/h2&gt;
-
-&lt;p&gt;&lt;strong&gt;clip path&lt;/strong&gt;限制在画布上绘制的区域，在&lt;strong&gt;clip path&lt;/strong&gt;所指定的区域外的位置不会被绘制。&lt;/p&gt;
-
-&lt;p&gt;我们通过下面的心形图标来展示&lt;strong&gt;clip path&lt;/strong&gt;的效果：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-xml&#34;&gt;&amp;lt;vector
-    xmlns:android=&amp;quot;http://schemas.android.com/apk/res/android&amp;quot;
-    android:width=&amp;quot;56dp&amp;quot;
-    android:height=&amp;quot;56dp&amp;quot;
-    android:viewportHeight=&amp;quot;56&amp;quot;
-    android:viewportWidth=&amp;quot;56&amp;quot;&amp;gt;
-
-  &amp;lt;path
-      android:fillColor=&amp;quot;@android:color/black&amp;quot;
-      android:pathData=&amp;quot;M28,39 L26.405,37.5667575 C20.74,32.4713896 17,29.1089918 17,24.9945504 C17,21.6321526 19.6565,19 23.05,19 C24.964,19 26.801,19.8828338 28,21.2724796 C29.199,19.8828338 31.036,19 32.95,19 C36.3435,19 39,21.6321526 39,24.9945504 C39,29.1089918 35.26,32.4713896 29.595,37.5667575 L28,39 L28,39 Z&amp;quot;/&amp;gt;
-
-&amp;lt;/vector&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;img src=&#34;heart.png&#34; alt=&#34;heart&#34; /&gt;&lt;br /&gt;
-&lt;font size=3&gt;&lt;strong&gt;Figure1&lt;/strong&gt; 心形图标&lt;/font&gt;&lt;/p&gt;
-
-&lt;p&gt;下面加入&lt;code&gt;&amp;lt;clip-path&amp;gt;&lt;/code&gt;将绘制区域限制在[0, 0, 56, 28]的矩形区域内：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-xml&#34;&gt;&amp;lt;vector
-    xmlns:android=&amp;quot;http://schemas.android.com/apk/res/android&amp;quot;
-    android:width=&amp;quot;56dp&amp;quot;
-    android:height=&amp;quot;56dp&amp;quot;
-    android:viewportHeight=&amp;quot;56&amp;quot;
-    android:viewportWidth=&amp;quot;56&amp;quot;&amp;gt;
-
-  &amp;lt;clip-path
-      android:name=&amp;quot;clip&amp;quot;
-      android:pathData=&amp;quot;M0 0 L56 0 L56 28 L0 28 Z&amp;quot;/&amp;gt;
-
-  &amp;lt;path
-      android:fillColor=&amp;quot;@android:color/black&amp;quot;
-      android:pathData=&amp;quot;M28,39 L26.405,37.5667575 C20.74,32.4713896 17,29.1089918 17,24.9945504 C17,21.6321526 19.6565,19 23.05,19 C24.964,19 26.801,19.8828338 28,21.2724796 C29.199,19.8828338 31.036,19 32.95,19 C36.3435,19 39,21.6321526 39,24.9945504 C39,29.1089918 35.26,32.4713896 29.595,37.5667575 L28,39 L28,39 Z&amp;quot;/&amp;gt;
-
-&amp;lt;/vector&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;img src=&#34;clip-heart.png&#34; alt=&#34;clip-heart&#34; /&gt;&lt;br /&gt;
-&lt;font size=3&gt;&lt;strong&gt;Figure2&lt;/strong&gt; clip后的心形图标&lt;/font&gt;&lt;/p&gt;
-
-&lt;h2 id=&#34;application&#34;&gt;Application&lt;/h2&gt;
-
-&lt;p&gt;可通过改变&lt;code&gt;&amp;lt;clip-path&amp;gt;&lt;/code&gt;的&lt;code&gt;pathData&lt;/code&gt;值来实现一些动画效果。&lt;/p&gt;
-
-&lt;p&gt;下面通过&lt;strong&gt;clip path&lt;/strong&gt;来实现填充心形图标的效果：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-xml&#34;&gt;&amp;lt;animated-vector
-  xmlns:android=&amp;quot;http://schemas.android.com/apk/res/android&amp;quot;
-  xmlns:aapt=&amp;quot;http://schemas.android.com/aapt&amp;quot;
-  android:drawable=&amp;quot;@drawable/vd_trimclip_heart_full&amp;quot;&amp;gt;
-
-  &amp;lt;target android:name=&amp;quot;clip&amp;quot;&amp;gt;
-    &amp;lt;aapt:attr name=&amp;quot;android:animation&amp;quot;&amp;gt;
-      &amp;lt;objectAnimator
-        android:duration=&amp;quot;@android:integer/config_mediumAnimTime&amp;quot;
-        android:interpolator=&amp;quot;@android:interpolator/fast_out_slow_in&amp;quot;
-        android:propertyName=&amp;quot;pathData&amp;quot;
-        android:valueFrom=&amp;quot;M18 37 L38 37 L38 37 L18 37 Z&amp;quot;
-        android:valueTo=&amp;quot;M0 0 L56 0 L56 56 L0 56 Z&amp;quot;
-        android:valueType=&amp;quot;pathType&amp;quot;/&amp;gt;
-    &amp;lt;/aapt:attr&amp;gt;
-  &amp;lt;/target&amp;gt;
-
-&amp;lt;/animated-vector&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;vd_trimclip_heart_full.xml：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code class=&#34;language-xml&#34;&gt;&amp;lt;vector
-    xmlns:android=&amp;quot;http://schemas.android.com/apk/res/android&amp;quot;
-    android:width=&amp;quot;56dp&amp;quot;
-    android:height=&amp;quot;56dp&amp;quot;
-    android:tint=&amp;quot;?attr/colorControlNormal&amp;quot;
-    android:viewportHeight=&amp;quot;56&amp;quot;
-    android:viewportWidth=&amp;quot;56&amp;quot;&amp;gt;
-
-  &amp;lt;path
-      android:pathData=&amp;quot;M28.7194825,38.2960196 L25.6688233,35.5523072 C21.6213379,31.793335 18.0159912,28.8906251 18.0159912,24.845337 C18.0159912,21.5882568 20.6305373,19.9651315 23.6337891,19.9651442 C24.9985352,19.96515 26.7993165,21.180664 28.643982,23.1297608&amp;quot;
-      android:strokeColor=&amp;quot;@android:color/white&amp;quot;
-      android:strokeWidth=&amp;quot;2&amp;quot;/&amp;gt;
-
-  &amp;lt;path
-      android:pathData=&amp;quot;M27.2310342,38.2944327 L30.7645263,35.2004395 C34.8336142,31.2354829 37.751709,29.1181308 38.0040283,25.0838624 C38.1681943,22.4590544 35.7730552,20.034668 33.3791503,20.034668 C30.4320068,20.034668 29.671997,21.0472412 27.2310342,23.1328126&amp;quot;
-      android:strokeColor=&amp;quot;@android:color/white&amp;quot;
-      android:strokeWidth=&amp;quot;2&amp;quot;/&amp;gt;
-
-  &amp;lt;group android:name=&amp;quot;filled&amp;quot;&amp;gt;
-    &amp;lt;clip-path
-        android:name=&amp;quot;clip&amp;quot;
-        android:pathData=&amp;quot;M18 37 L38 37 L38 37 L18 37 Z&amp;quot;/&amp;gt;
-    &amp;lt;path
-        android:fillColor=&amp;quot;@android:color/white&amp;quot;
-        android:pathData=&amp;quot;M28,39 L26.405,37.5667575 C20.74,32.4713896 17,29.1089918 17,24.9945504 C17,21.6321526 19.6565,19 23.05,19 C24.964,19 26.801,19.8828338 28,21.2724796 C29.199,19.8828338 31.036,19 32.95,19 C36.3435,19 39,21.6321526 39,24.9945504 C39,29.1089918 35.26,32.4713896 29.595,37.5667575 L28,39 L28,39 Z&amp;quot;/&amp;gt;
-  &amp;lt;/group&amp;gt;
-
-&amp;lt;/vector&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;&lt;img src=&#34;fill-heart.gif&#34; alt=&#34;fill-heart&#34; /&gt;&lt;br /&gt;
-&lt;font size=3&gt;&lt;strong&gt;Figure3&lt;/strong&gt; 心形图标填充效果&lt;/font&gt;&lt;/p&gt;
-</description>
+      <guid>https://xjy2061.github.io/carina/post/vectordrawable-clip-path/</guid>
+      <description>Function clip path限制在画布上绘制的区域，在clip path所指定的区域外的位置不会被绘制。
+我们通过下面的心形图标来展示clip path的效果：
+&amp;lt;vector xmlns:android=&amp;#34;http://schemas.android.com/apk/res/android&amp;#34; android:width=&amp;#34;56dp&amp;#34; android:height=&amp;#34;56dp&amp;#34; android:viewportHeight=&amp;#34;56&amp;#34; android:viewportWidth=&amp;#34;56&amp;#34;&amp;gt; &amp;lt;path android:fillColor=&amp;#34;@android:color/black&amp;#34; android:pathData=&amp;#34;M28,39 L26.405,37.5667575 C20.74,32.4713896 17,29.1089918 17,24.9945504 C17,21.6321526 19.6565,19 23.05,19 C24.964,19 26.801,19.8828338 28,21.2724796 C29.199,19.8828338 31.036,19 32.95,19 C36.3435,19 39,21.6321526 39,24.9945504 C39,29.1089918 35.26,32.4713896 29.595,37.5667575 L28,39 L28,39 Z&amp;#34;/&amp;gt; &amp;lt;/vector&amp;gt; Figure1 心形图标
+下面加入&amp;lt;clip-path&amp;gt;将绘制区域限制在[0, 0, 56, 28]的矩形区域内：
+&amp;lt;vector xmlns:android=&amp;#34;http://schemas.android.com/apk/res/android&amp;#34; android:width=&amp;#34;56dp&amp;#34; android:height=&amp;#34;56dp&amp;#34; android:viewportHeight=&amp;#34;56&amp;#34; android:viewportWidth=&amp;#34;56&amp;#34;&amp;gt; &amp;lt;clip-path android:name=&amp;#34;clip&amp;#34; android:pathData=&amp;#34;M0 0 L56 0 L56 28 L0 28 Z&amp;#34;/&amp;gt; &amp;lt;path android:fillColor=&amp;#34;@android:color/black&amp;#34; android:pathData=&amp;#34;M28,39 L26.405,37.5667575 C20.74,32.4713896 17,29.1089918 17,24.9945504 C17,21.6321526 19.6565,19 23.</description>
     </item>
     
   </channel>

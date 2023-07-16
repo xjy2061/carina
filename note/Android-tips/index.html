@@ -1,190 +1,296 @@
 <!DOCTYPE html>
 <html lang="en-us">
-
-<head>
-
+  <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Android tips -- Carina</title>
-
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Android tips | Carina</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="如果要在低版本系统上使用高版本系统才加入的类，可以在app中加入同名类，在高版本系统上安装时这个同名类会删除，还是使用系统的类，在低版本系统则使用在app中加入的类。
+在不同的PendingIntent的Intent中设置extra，在处理Intent的地方获取的extra始终相同，可以通过设置不同RequestCode来区分不同的PendingIntent。
+对于 replace Fragment，通过代码和 layout 文件加入最初的 Fragment 这两种方式之间是有区别的，replace 后最初 Fragment 的 onDestroyView 方法都会被调用，但再回退时，通过代码方式加入的最初 Fragment 会重新显示，其 onCreateView 方法会被调用，而 layout 文件方式不会重新显示。
+在xml中加入fragment时键盘会自动弹出，通过代码加入时不会。
+AsyncTask在3.0以前是并行执行的，3.0及以后顺序执行的，AsyncTask是通过静态的Handler成员变量将结果post到主线程中执行的，所以要确保加载AsyncTask类是在主线程中执行的，在4.1及以后系统已经确保的这一点。
+如果自己decode ninepatch图片，要先compile ninepatch图片。
+android ListView Adapter&rsquo;s getView method sometimes provide a wrong type convertView. stackoverflow
+市场解锁、gaeproxy等软件会修改运营商信息。
+cookie里包含有特殊字符会导致请求失败。
+Bitmap.createBitmap在低内存时在有些手机上可能返回null，而不是抛OutofMemoryError。
+对于apk压缩包的操作应使用android自带的aapt，避免直接使用zip，直接使用zip会将apk里面的raw资源压缩，导致有些rom下读取raw文件失败。
+如果不给WebView设置WebViewClient，在有些手机上会自动跳到系统浏览器。
+在Androd 7.0上如果使用FLAG_ACTIVITY_REORDER_TO_FRONT来启动activity，快速连续点击不断启动activity时，可能会回到桌面。
+在MIUI10上通过Fragment的startActivity方法来启动activity，通过theme中windowAnimationStyle设置的进入动画会失效。">
+    <meta name="generator" content="Hugo 0.115.3">
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
     
 
     
-    <link href="https://xjy2061.github.io/carina//css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="/carina/ananke/css/main.min.css" >
 
-    
-    <link href="https://xjy2061.github.io/carina//css/clean-blog.min.css" rel="stylesheet">
 
-    
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-    <link href='//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
 
     
     
     
+      
+
+    
+
+    
+    
+    <meta property="og:title" content="Android tips" />
+<meta property="og:description" content="如果要在低版本系统上使用高版本系统才加入的类，可以在app中加入同名类，在高版本系统上安装时这个同名类会删除，还是使用系统的类，在低版本系统则使用在app中加入的类。
+在不同的PendingIntent的Intent中设置extra，在处理Intent的地方获取的extra始终相同，可以通过设置不同RequestCode来区分不同的PendingIntent。
+对于 replace Fragment，通过代码和 layout 文件加入最初的 Fragment 这两种方式之间是有区别的，replace 后最初 Fragment 的 onDestroyView 方法都会被调用，但再回退时，通过代码方式加入的最初 Fragment 会重新显示，其 onCreateView 方法会被调用，而 layout 文件方式不会重新显示。
+在xml中加入fragment时键盘会自动弹出，通过代码加入时不会。
+AsyncTask在3.0以前是并行执行的，3.0及以后顺序执行的，AsyncTask是通过静态的Handler成员变量将结果post到主线程中执行的，所以要确保加载AsyncTask类是在主线程中执行的，在4.1及以后系统已经确保的这一点。
+如果自己decode ninepatch图片，要先compile ninepatch图片。
+android ListView Adapter&rsquo;s getView method sometimes provide a wrong type convertView. stackoverflow
+市场解锁、gaeproxy等软件会修改运营商信息。
+cookie里包含有特殊字符会导致请求失败。
+Bitmap.createBitmap在低内存时在有些手机上可能返回null，而不是抛OutofMemoryError。
+对于apk压缩包的操作应使用android自带的aapt，避免直接使用zip，直接使用zip会将apk里面的raw资源压缩，导致有些rom下读取raw文件失败。
+如果不给WebView设置WebViewClient，在有些手机上会自动跳到系统浏览器。
+在Androd 7.0上如果使用FLAG_ACTIVITY_REORDER_TO_FRONT来启动activity，快速连续点击不断启动activity时，可能会回到桌面。
+在MIUI10上通过Fragment的startActivity方法来启动activity，通过theme中windowAnimationStyle设置的进入动画会失效。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xjy2061.github.io/carina/note/android-tips/" /><meta property="article:section" content="note" />
+<meta property="article:published_time" content="2017-04-29T18:08:07+08:00" />
+<meta property="article:modified_time" content="2017-04-29T18:08:07+08:00" />
+<meta itemprop="name" content="Android tips">
+<meta itemprop="description" content="如果要在低版本系统上使用高版本系统才加入的类，可以在app中加入同名类，在高版本系统上安装时这个同名类会删除，还是使用系统的类，在低版本系统则使用在app中加入的类。
+在不同的PendingIntent的Intent中设置extra，在处理Intent的地方获取的extra始终相同，可以通过设置不同RequestCode来区分不同的PendingIntent。
+对于 replace Fragment，通过代码和 layout 文件加入最初的 Fragment 这两种方式之间是有区别的，replace 后最初 Fragment 的 onDestroyView 方法都会被调用，但再回退时，通过代码方式加入的最初 Fragment 会重新显示，其 onCreateView 方法会被调用，而 layout 文件方式不会重新显示。
+在xml中加入fragment时键盘会自动弹出，通过代码加入时不会。
+AsyncTask在3.0以前是并行执行的，3.0及以后顺序执行的，AsyncTask是通过静态的Handler成员变量将结果post到主线程中执行的，所以要确保加载AsyncTask类是在主线程中执行的，在4.1及以后系统已经确保的这一点。
+如果自己decode ninepatch图片，要先compile ninepatch图片。
+android ListView Adapter&rsquo;s getView method sometimes provide a wrong type convertView. stackoverflow
+市场解锁、gaeproxy等软件会修改运营商信息。
+cookie里包含有特殊字符会导致请求失败。
+Bitmap.createBitmap在低内存时在有些手机上可能返回null，而不是抛OutofMemoryError。
+对于apk压缩包的操作应使用android自带的aapt，避免直接使用zip，直接使用zip会将apk里面的raw资源压缩，导致有些rom下读取raw文件失败。
+如果不给WebView设置WebViewClient，在有些手机上会自动跳到系统浏览器。
+在Androd 7.0上如果使用FLAG_ACTIVITY_REORDER_TO_FRONT来启动activity，快速连续点击不断启动activity时，可能会回到桌面。
+在MIUI10上通过Fragment的startActivity方法来启动activity，通过theme中windowAnimationStyle设置的进入动画会失效。"><meta itemprop="datePublished" content="2017-04-29T18:08:07+08:00" />
+<meta itemprop="dateModified" content="2017-04-29T18:08:07+08:00" />
+<meta itemprop="wordCount" content="45">
+<meta itemprop="keywords" content="Android,tips," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Android tips"/>
+<meta name="twitter:description" content="如果要在低版本系统上使用高版本系统才加入的类，可以在app中加入同名类，在高版本系统上安装时这个同名类会删除，还是使用系统的类，在低版本系统则使用在app中加入的类。
+在不同的PendingIntent的Intent中设置extra，在处理Intent的地方获取的extra始终相同，可以通过设置不同RequestCode来区分不同的PendingIntent。
+对于 replace Fragment，通过代码和 layout 文件加入最初的 Fragment 这两种方式之间是有区别的，replace 后最初 Fragment 的 onDestroyView 方法都会被调用，但再回退时，通过代码方式加入的最初 Fragment 会重新显示，其 onCreateView 方法会被调用，而 layout 文件方式不会重新显示。
+在xml中加入fragment时键盘会自动弹出，通过代码加入时不会。
+AsyncTask在3.0以前是并行执行的，3.0及以后顺序执行的，AsyncTask是通过静态的Handler成员变量将结果post到主线程中执行的，所以要确保加载AsyncTask类是在主线程中执行的，在4.1及以后系统已经确保的这一点。
+如果自己decode ninepatch图片，要先compile ninepatch图片。
+android ListView Adapter&rsquo;s getView method sometimes provide a wrong type convertView. stackoverflow
+市场解锁、gaeproxy等软件会修改运营商信息。
+cookie里包含有特殊字符会导致请求失败。
+Bitmap.createBitmap在低内存时在有些手机上可能返回null，而不是抛OutofMemoryError。
+对于apk压缩包的操作应使用android自带的aapt，避免直接使用zip，直接使用zip会将apk里面的raw资源压缩，导致有些rom下读取raw文件失败。
+如果不给WebView设置WebViewClient，在有些手机上会自动跳到系统浏览器。
+在Androd 7.0上如果使用FLAG_ACTIVITY_REORDER_TO_FRONT来启动activity，快速连续点击不断启动activity时，可能会回到桌面。
+在MIUI10上通过Fragment的startActivity方法来启动activity，通过theme中windowAnimationStyle设置的进入动画会失效。"/>
+
 	
-	<link href="https://xjy2061.github.io/carina//css/prism.css" rel="stylesheet" />
+  </head>
 
-</head>
-
-<body>
+  <body class="ma0 avenir bg-near-white">
 
     
-    <nav class="navbar navbar-default navbar-custom navbar-fixed-top">
-        <div class="container-fluid">
-            
-            <div class="navbar-header page-scroll">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="https://xjy2061.github.io/carina/">Carina</a>
-            </div>
+   
+  
 
-                       
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    
-                    <li>
-                        <a href="/carina/">home</a>
-                    </li>
-                    
-                    <li>
-                        <a href="/carina/note/">Notes</a>
-                    </li>
-                    
-                  </ul>
-            </div>
-           
+  
+  <header class="cover bg-top" style="background-image: url('https://xjy2061.github.io/carina/images/gohugo-default-sample-hero-image.jpg');">
+    <div class="bg-black-60">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="/carina/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Carina
+      
+    </a>
+    <div class="flex-l items-center">
+      
 
-        </div>
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="/carina/" title="home page">
+              home
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="/carina/note/" title="Notes page">
+              Notes
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+<div class="ananke-socials">
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+      <div class="tc-l pv6 ph3 ph4-ns">
         
-    </nav>
-
-
-    
-    
-    <header class="intro-header" style="background-image: url('https://xjy2061.github.io/carina//img/note-single-bg.jpg')">
-    
-      <div class="container">
-        <div class="row">
-           <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-             <div class="post-heading">
-               <h1>Android tips</h1>
-               <h2 class="subheading"></h2>
-               <span class="meta">
-                 
-Posted by <a href="#">xjy2061</a> on Sat, Apr 29, 2017
-<br />
-In <a href="/categories/note">Note</a>
-
-<br />
-Tags <a href="/tags/android">android</a>, <a href="/tags/tips">tips</a>
-
-               </span>
-             </div>
-           </div>
-        </div>
+          <div class="f2 f1-l fw2 white-90 mb0 lh-title">Android tips</div>
+          
+        
       </div>
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked">
+          
+        NOTES
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Android tips</h1>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2017-04-29T18:08:07+08:00">April 29, 2017</time>
+      
+
+      
+      
     </header>
-
-    
-    <article>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                  <ul>
-<li><p>如果要在低版本系统上使用高版本系统才加入的类，可以在app中加入同名类，在高版本系统上安装时这个同名类会删除，还是使用系统的类，在低版本系统则使用在app中加入的类。</p></li>
-
-<li><p>在不同的<code>PendingIntent</code>的<code>Intent</code>中设置extra，在处理<code>Intent</code>的地方获取的extra始终相同，可以通过设置不同RequestCode来区分不同的<code>PendingIntent</code>。</p></li>
-
-<li><p>对于 replace <code>Fragment</code>，通过代码和 layout 文件加入最初的 <code>Fragment</code> 这两种方式之间是有区别的，replace 后最初 <code>Fragment</code> 的 <code>onDestroyView</code> 方法都会被调用，但再回退时，通过代码方式加入的最初 <code>Fragment</code> 会重新显示，其 <code>onCreateView</code> 方法会被调用，而 layout 文件方式不会重新显示。</p></li>
-
-<li><p>在xml中加入fragment时键盘会自动弹出，通过代码加入时不会。</p></li>
-
-<li><p><code>AsyncTask</code>在3.0以前是并行执行的，3.0及以后顺序执行的，<code>AsyncTask</code>是通过静态的<code>Handler</code>成员变量将结果post到主线程中执行的，所以要确保加载<code>AsyncTask</code>类是在主线程中执行的，在4.1及以后系统已经确保的这一点。</p></li>
-
-<li><p>如果自己decode ninepatch图片，要先compile ninepatch图片。</p></li>
-
-<li><p>android ListView Adapter&rsquo;s getView method sometimes provide a wrong type convertView. <a href="http://stackoverflow.com/questions/12018997/why-does-getview-return-wrong-convertview-objects-on-separatedlistadapter">stackoverflow</a></p></li>
-
-<li><p>市场解锁、gaeproxy等软件会修改运营商信息。</p></li>
-
-<li><p>cookie里包含有特殊字符会导致请求失败。</p></li>
-
-<li><p>Bitmap.createBitmap在低内存时在有些手机上可能返回null，而不是抛OutofMemoryError。</p></li>
-
-<li><p>对于apk压缩包的操作应使用android自带的aapt，避免直接使用zip，直接使用zip会将apk里面的raw资源压缩，导致有些rom下读取raw文件失败。</p></li>
-
-<li><p>如果不给<code>WebView</code>设置<code>WebViewClient</code>，在有些手机上会自动跳到系统浏览器。</p></li>
-
-<li><p>在Androd 7.0上如果使用<code>FLAG_ACTIVITY_REORDER_TO_FRONT</code>来启动activity，快速连续点击不断启动activity时，可能会回到桌面。</p></li>
-
-<li><p>在MIUI10上通过<code>Fragment</code>的<code>startActivity</code>方法来启动activity，通过theme中<code>windowAnimationStyle</code>设置的进入动画会失效。</p></li>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><ul>
+<li>
+<p>如果要在低版本系统上使用高版本系统才加入的类，可以在app中加入同名类，在高版本系统上安装时这个同名类会删除，还是使用系统的类，在低版本系统则使用在app中加入的类。</p>
+</li>
+<li>
+<p>在不同的<code>PendingIntent</code>的<code>Intent</code>中设置extra，在处理<code>Intent</code>的地方获取的extra始终相同，可以通过设置不同RequestCode来区分不同的<code>PendingIntent</code>。</p>
+</li>
+<li>
+<p>对于 replace <code>Fragment</code>，通过代码和 layout 文件加入最初的 <code>Fragment</code> 这两种方式之间是有区别的，replace 后最初 <code>Fragment</code> 的 <code>onDestroyView</code> 方法都会被调用，但再回退时，通过代码方式加入的最初 <code>Fragment</code> 会重新显示，其 <code>onCreateView</code> 方法会被调用，而 layout 文件方式不会重新显示。</p>
+</li>
+<li>
+<p>在xml中加入fragment时键盘会自动弹出，通过代码加入时不会。</p>
+</li>
+<li>
+<p><code>AsyncTask</code>在3.0以前是并行执行的，3.0及以后顺序执行的，<code>AsyncTask</code>是通过静态的<code>Handler</code>成员变量将结果post到主线程中执行的，所以要确保加载<code>AsyncTask</code>类是在主线程中执行的，在4.1及以后系统已经确保的这一点。</p>
+</li>
+<li>
+<p>如果自己decode ninepatch图片，要先compile ninepatch图片。</p>
+</li>
+<li>
+<p>android ListView Adapter&rsquo;s getView method sometimes provide a wrong type convertView. <a href="http://stackoverflow.com/questions/12018997/why-does-getview-return-wrong-convertview-objects-on-separatedlistadapter">stackoverflow</a></p>
+</li>
+<li>
+<p>市场解锁、gaeproxy等软件会修改运营商信息。</p>
+</li>
+<li>
+<p>cookie里包含有特殊字符会导致请求失败。</p>
+</li>
+<li>
+<p>Bitmap.createBitmap在低内存时在有些手机上可能返回null，而不是抛OutofMemoryError。</p>
+</li>
+<li>
+<p>对于apk压缩包的操作应使用android自带的aapt，避免直接使用zip，直接使用zip会将apk里面的raw资源压缩，导致有些rom下读取raw文件失败。</p>
+</li>
+<li>
+<p>如果不给<code>WebView</code>设置<code>WebViewClient</code>，在有些手机上会自动跳到系统浏览器。</p>
+</li>
+<li>
+<p>在Androd 7.0上如果使用<code>FLAG_ACTIVITY_REORDER_TO_FRONT</code>来启动activity，快速连续点击不断启动activity时，可能会回到桌面。</p>
+</li>
+<li>
+<p>在MIUI10上通过<code>Fragment</code>的<code>startActivity</code>方法来启动activity，通过theme中<code>windowAnimationStyle</code>设置的进入动画会失效。</p>
+</li>
 </ul>
+<ul class="pa0">
+  
+   <li class="list di">
+     <a href="/carina/tags/android/" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Android</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/carina/tags/tips/" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">tips</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
 
-                  
+    <aside class="w-30-l mt6-l">
 
-                </div>
-            </div>
-        </div>
-    </article>
 
-    <hr>
-    
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                  <ul class="list-inline text-center">
-                    
-                      <li>
-                        <a href="mailto:xjy2061@gmail.com">
-                          <span class="fa-stack fa-lg">
-                            <i class="fa fa-circle fa-stack-2x"></i>
-                            <i class="fa fa-envelope-o fa-stack-1x fa-inverse"></i>
-                          </span>
-                        </a>
-                      </li>
-                    
-                    
-                    <li>
-                      <a href="https://github.com/xjy2061">
-                        <span class="fa-stack fa-lg">
-                          <i class="fa fa-circle fa-stack-2x"></i>
-                          <i class="fa fa-github fa-stack-1x fa-inverse"></i>
-                        </span>
-                      </a>
-                    </li>
-                    
-                  </ul>
-                  <p class="copyright text-muted"></p>
-                </div>
-            </div>
-        </div>
-    </footer>
 
-    
-    <script src="https://xjy2061.github.io/carina//js/jquery.min.js"></script>
 
-    
-    <script src="https://xjy2061.github.io/carina//js/bootstrap.min.js"></script>
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/carina/post/create-avd-and-start-app-with-command-line/">Create avd and start app with command line</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/carina/post/vectordrawable-clip-path/">VectorDrawable clip path</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/carina/note/android-studio-tips/">Android studio tips</a>
+        </li>
+	    
+    </ul>
+</div>
 
-    
-    <script src="https://xjy2061.github.io/carina//js/clean-blog.js"></script>
+</aside>
 
-    
-	
-	<script src="https://xjy2061.github.io/carina//js/prism.js"></script>
+  </article>
 
-</body>
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://xjy2061.github.io/carina/" >
+    &copy;  Carina 2023 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+</div>
+</div>
+  </div>
+</footer>
 
+  </body>
 </html>
-
