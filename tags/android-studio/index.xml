@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Android Studio on Carina</title>
+    <link>https://xjy2061.github.io/carina/tags/android-studio/</link>
+    <description>Recent content in Android Studio on Carina</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 09 Jul 2017 15:13:05 +0800</lastBuildDate><atom:link href="https://xjy2061.github.io/carina/tags/android-studio/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Android Studio 3.0 Device File Explorer &amp; Fonts</title>
+      <link>https://xjy2061.github.io/carina/post/android-studio-3.0-device-file-explorer-fonts/</link>
+      <pubDate>Sun, 09 Jul 2017 15:13:05 +0800</pubDate>
+      
+      <guid>https://xjy2061.github.io/carina/post/android-studio-3.0-device-file-explorer-fonts/</guid>
+      <description>Device File Explorer 使用设备的文件系统，可按如下的操作方式：
+点击View &amp;gt; Tool Windows &amp;gt; Device File Explorer或者点击右下角位于工具窗口条中的Device File Explorer按钮来打开Device File Explorer。
+从上方的下拉列表中选择设备。
+在文件浏览窗口中操作设备文件。鼠标右键点击文件或目录来创建一个新文件或目录，保存现在的文件或目录到电脑中，上传、删除或同步文件。鼠标双击文件可以在Android Studio中打开文件。
+注意：Android Studio 将用 Device File Explorer 打开的文件保存在工程外的临时目录中，如果在 Device File Explorer 中修改文件，并想把修改保存到设备中，需要手动将修改的文件上传到设备中。
+Figure1 Device File Explorer窗口
+当浏览设备文件时，以下2个目录是经常访问的：
+data/data/app_name/：包含存储于内部存储空间的应用数据文件
+sdcard/：包含存储于外部存储空间的用户文件
+注意：不是所有的文件都在Device File Explorer中可见。例如在**data/data/**目录中，非debuggable应用的文件是不能展开的。
+XML Fonts &amp;amp; Downloadable Fonts Android O 引入了XML字体新特性，可以将字体作为资源使用。
+XML Fonts Android O 可以通过将字体文件加入res/font目录来将字体作为资源使用。这些字体会被编译到R文件中，并在 Android Studio 中可用。可以通过新的资源类型font来访问字体资源，例如用@font/myfont或者R.font.myfont来访问一个字体资源。
+在 Android Studio 中可以通过执行以下步骤来字体资源：
+鼠标右键点击res目录，选择New &amp;gt; Android Resource Directory，打开New Resource Directory窗口。
+在Resource type列表里选择font，然后点击OK。
+Figure2 添加字体目录</description>
+    </item>
+    
+    <item>
+      <title>Android studio tips</title>
+      <link>https://xjy2061.github.io/carina/note/android-studio-tips/</link>
+      <pubDate>Sat, 11 Mar 2017 16:08:07 +0800</pubDate>
+      
+      <guid>https://xjy2061.github.io/carina/note/android-studio-tips/</guid>
+      <description>Share module between projects Add this to settings.gradle file at the project root:
+include &#39;:libraryName&#39; project(&#39;:libraryName&#39;).projectDir=new File(&#39;/path/to/library&#39;) where the path you specify in the second line is the path to the directory containing the library&amp;rsquo;s build.gradle file. The path can be relative or absolute.
+Avoid so file can not find problem If library&amp;rsquo;s jniLibs contians armeabi-v7a folder, but main module&amp;rsquo;s jniLibs contains not, the app will crash because of so file could not found.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <title>Android memory leak | Carina</title>
+    <meta name="viewport" content="width=device-width,minimum-scale=1">
+    <meta name="description" content="Leak because of system bug PhoneStateListener leak Below 7.0 a non static inner class IPhoneStateListener.Stub callback in PhoneStateListener references to outside PhoneStateListener, even caller has been destroyed and &ldquo;un-registered&rdquo; the PhoneStateListener, the references coming from: Native Stack &ndash;&gt; PhoneStateListener &ndash;&gt; Context(Activity).
+A wrapper class wraps a weak reference of PhoneStateListener can be used to avoid this memory leak.
+Caution: The original PhoneStateListener object must be referenced by caller class, otherwise the weak reference in the wrapper class will get null.">
+    <meta name="generator" content="Hugo 0.115.3">
+    
+    
+    
+    
+      <meta name="robots" content="noindex, nofollow">
+    
+
+    
+<link rel="stylesheet" href="/carina/ananke/css/main.min.css" >
+
+
+
+    
+    
+    
+      
+
+    
+
+    
+    
+    <meta property="og:title" content="Android memory leak" />
+<meta property="og:description" content="Leak because of system bug PhoneStateListener leak Below 7.0 a non static inner class IPhoneStateListener.Stub callback in PhoneStateListener references to outside PhoneStateListener, even caller has been destroyed and &ldquo;un-registered&rdquo; the PhoneStateListener, the references coming from: Native Stack &ndash;&gt; PhoneStateListener &ndash;&gt; Context(Activity).
+A wrapper class wraps a weak reference of PhoneStateListener can be used to avoid this memory leak.
+Caution: The original PhoneStateListener object must be referenced by caller class, otherwise the weak reference in the wrapper class will get null." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xjy2061.github.io/carina/post/android-memory-leak/" /><meta property="article:section" content="post" />
+<meta property="article:published_time" content="2017-09-10T20:09:00+08:00" />
+<meta property="article:modified_time" content="2017-09-10T20:09:00+08:00" />
+<meta itemprop="name" content="Android memory leak">
+<meta itemprop="description" content="Leak because of system bug PhoneStateListener leak Below 7.0 a non static inner class IPhoneStateListener.Stub callback in PhoneStateListener references to outside PhoneStateListener, even caller has been destroyed and &ldquo;un-registered&rdquo; the PhoneStateListener, the references coming from: Native Stack &ndash;&gt; PhoneStateListener &ndash;&gt; Context(Activity).
+A wrapper class wraps a weak reference of PhoneStateListener can be used to avoid this memory leak.
+Caution: The original PhoneStateListener object must be referenced by caller class, otherwise the weak reference in the wrapper class will get null."><meta itemprop="datePublished" content="2017-09-10T20:09:00+08:00" />
+<meta itemprop="dateModified" content="2017-09-10T20:09:00+08:00" />
+<meta itemprop="wordCount" content="613">
+<meta itemprop="keywords" content="Android,Memory leak," /><meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Android memory leak"/>
+<meta name="twitter:description" content="Leak because of system bug PhoneStateListener leak Below 7.0 a non static inner class IPhoneStateListener.Stub callback in PhoneStateListener references to outside PhoneStateListener, even caller has been destroyed and &ldquo;un-registered&rdquo; the PhoneStateListener, the references coming from: Native Stack &ndash;&gt; PhoneStateListener &ndash;&gt; Context(Activity).
+A wrapper class wraps a weak reference of PhoneStateListener can be used to avoid this memory leak.
+Caution: The original PhoneStateListener object must be referenced by caller class, otherwise the weak reference in the wrapper class will get null."/>
+
+	
+  </head>
+
+  <body class="ma0 avenir bg-near-white">
+
+    
+   
+  
+
+  <header>
+    <div class="bg-black">
+      <nav class="pv3 ph3 ph4-ns" role="navigation">
+  <div class="flex-l justify-between items-center center">
+    <a href="/carina/" class="f3 fw2 hover-white no-underline white-90 dib">
+      
+        Carina
+      
+    </a>
+    <div class="flex-l items-center">
+      
+
+      
+        <ul class="pl0 mr3">
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="/carina/" title="home page">
+              home
+            </a>
+          </li>
+          
+          <li class="list f5 f4-ns fw4 dib pr3">
+            <a class="hover-white no-underline white-90" href="/carina/note/" title="Notes page">
+              Notes
+            </a>
+          </li>
+          
+        </ul>
+      
+      
+<div class="ananke-socials">
+  
+</div>
+
+    </div>
+  </div>
+</nav>
+
+    </div>
+  </header>
+
+
+
+    <main class="pb7" role="main">
+      
+  
+  <article class="flex-l flex-wrap justify-between mw8 center ph3">
+    <header class="mt4 w-100">
+      <aside class="instapaper_ignoref b helvetica tracked">
+          
+        POSTS
+      </aside>
+      
+
+
+
+
+
+
+
+
+
+
+  <div id="sharing" class="mt3 ananke-socials">
+    
+  </div>
+
+
+      <h1 class="f1 athelas mt3 mb1">Android memory leak</h1>
+      
+      
+      
+      <time class="f6 mv4 dib tracked" datetime="2017-09-10T20:09:00+08:00">September 10, 2017</time>
+      
+
+      
+      
+    </header>
+    <div class="nested-copy-line-height lh-copy serif f4 nested-links mid-gray pr4-l w-two-thirds-l"><h2 id="leak-because-of-system-bug">Leak because of system bug</h2>
+<h3 id="phonestatelistener-leak"><code>PhoneStateListener</code> leak</h3>
+<p>Below 7.0 a non static inner class <code>IPhoneStateListener.Stub</code> callback in <code>PhoneStateListener</code> references to outside <code>PhoneStateListener</code>, even caller has been destroyed and &ldquo;un-registered&rdquo; the <code>PhoneStateListener</code>, the references coming from: Native Stack &ndash;&gt; PhoneStateListener &ndash;&gt; Context(Activity).</p>
+<p>A wrapper class wraps a weak reference of <code>PhoneStateListener</code> can be used to avoid this memory leak.</p>
+<blockquote>
+<p>Caution: The original <code>PhoneStateListener</code> object must be referenced by caller class, otherwise the weak reference in the wrapper class will get <code>null</code>.</p>
+</blockquote>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">PhoneStateListenerWrapper</span> <span style="color:#66d9ef">extends</span> PhoneStateListener <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">private</span> WeakReference<span style="color:#f92672">&lt;</span>PhoneStateListener<span style="color:#f92672">&gt;</span> mPhoneStateListenerRef<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#a6e22e">PhoneStateListenerWrapper</span><span style="color:#f92672">(</span>PhoneStateListener phoneStateListener<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        mPhoneStateListenerRef <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> WeakReference<span style="color:#f92672">&lt;&gt;(</span>phoneStateListener<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onCallStateChanged</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> state<span style="color:#f92672">,</span> String incomingNumber<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">onCallStateChanged</span><span style="color:#f92672">(</span>state<span style="color:#f92672">,</span> incomingNumber<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        PhoneStateListener phoneStateListener <span style="color:#f92672">=</span> mPhoneStateListenerRef<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>phoneStateListener <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            phoneStateListener<span style="color:#f92672">.</span><span style="color:#a6e22e">onCallStateChanged</span><span style="color:#f92672">(</span>state<span style="color:#f92672">,</span> incomingNumber<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> PhoneStateListener mPhoneStateListener <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> PhoneStateListener<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onCallStateChanged</span><span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> state<span style="color:#f92672">,</span> String incomingNumber<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">super</span><span style="color:#f92672">.</span><span style="color:#a6e22e">onCallStateChanged</span><span style="color:#f92672">(</span>state<span style="color:#f92672">,</span> incomingNumber<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//...
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">private</span> PhoneStateListenerWrapper mPhoneStateListenerWrapper <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> PhoneStateListenerWrapper<span style="color:#f92672">(</span>mPhoneStateListener<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">((</span>TelephonyManager<span style="color:#f92672">)</span> mContext<span style="color:#f92672">.</span><span style="color:#a6e22e">getSystemService</span><span style="color:#f92672">(</span>Context<span style="color:#f92672">.</span><span style="color:#a6e22e">TELEPHONY_SERVICE</span><span style="color:#f92672">)).</span><span style="color:#a6e22e">listen</span><span style="color:#f92672">(</span>mPhoneStateListenerWrapper<span style="color:#f92672">,</span> PhoneStateListener<span style="color:#f92672">.</span><span style="color:#a6e22e">LISTEN_CALL_STATE</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">((</span>TelephonyManager<span style="color:#f92672">)</span> mContext<span style="color:#f92672">.</span><span style="color:#a6e22e">getSystemService</span><span style="color:#f92672">(</span>Context<span style="color:#f92672">.</span><span style="color:#a6e22e">TELEPHONY_SERVICE</span><span style="color:#f92672">)).</span><span style="color:#a6e22e">listen</span><span style="color:#f92672">(</span>mPhoneStateListenerWrapper<span style="color:#f92672">,</span> PhoneStateListener<span style="color:#f92672">.</span><span style="color:#a6e22e">LISTEN_NONE</span><span style="color:#f92672">);</span>
+</span></span></code></pre></div><h3 id="audiomanager-leak"><code>AudioManager</code> leak</h3>
+<p>Below 6.0 <code>AudioManager</code> reference to the incoming context of constructor directly, the related issue is <a href="https://issuetracker.google.com/issues/37024105">here</a>.</p>
+<p>A simple workaround is using <code>Application</code> context to get <code>AudioManager</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span>mAudioManager <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>AudioManager<span style="color:#f92672">)</span> context<span style="color:#f92672">.</span><span style="color:#a6e22e">getApplicationContext</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getSystemService</span><span style="color:#f92672">(</span>Context<span style="color:#f92672">.</span><span style="color:#a6e22e">AUDIO_SERVICE</span><span style="color:#f92672">);</span>
+</span></span></code></pre></div><h3 id="inputmethodmanager-leak"><code>InputMethodManager</code> leak</h3>
+<p>Refer to <a href="https://issuetracker.google.com/issues/37043700">issue 37043700</a> and <a href="https://issuetracker.google.com/issues/37090736">issue 37090736</a>, <code>mCurRootView</code> or <code>mServedView</code> or <code>mNextServedView</code> in <code>InputMethodManager</code> may reference to last focused view on a wide system version range. But I have not found this kind of leak in official system. However, <code>mLastSrvView</code> of <code>InputMethodManager</code> may cause leak on huawei 6.0 and above device, and <code>mLastSrvView</code> field is not found in official source code, I think this is a leak for certain manufacturer.</p>
+<p>To fix this kind of leak, a straight way is set the relative field of <code>InputMethodManager</code> to <code>null</code> when activity destroyed. Considering there may be multiple activities have this leak, a better way is fix this leak in the <code>onActivityDestroyed(Activity activity)</code> method of <code>ActivityLifecycleCallbacks</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onActivityDestroyed</span><span style="color:#f92672">(</span>Activity activity<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	MemoryLeakFixer<span style="color:#f92672">.</span><span style="color:#a6e22e">fixInputMethodManagerLeak</span><span style="color:#f92672">(</span>activity<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">class</span> <span style="color:#a6e22e">MemoryLeakFixer</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">fixInputMethodManagerLeak</span><span style="color:#f92672">(</span>Activity activity<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#75715e">//Surround with a appropriate if condition to make sure execute fix when leak real exists is better.
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>        InputMethodManager inputMethodManager <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            inputMethodManager <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>InputMethodManager<span style="color:#f92672">)</span> activity<span style="color:#f92672">.</span><span style="color:#a6e22e">getApplicationContext</span><span style="color:#f92672">().</span><span style="color:#a6e22e">getSystemService</span><span style="color:#f92672">(</span>Context<span style="color:#f92672">.</span><span style="color:#a6e22e">INPUT_METHOD_SERVICE</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Throwable t<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            t<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>inputMethodManager<span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            String<span style="color:#f92672">[]</span> fieldNames <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> String<span style="color:#f92672">[]{</span><span style="color:#e6db74">&#34;mCurRootView&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;mServedView&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;mNextServedView&#34;</span><span style="color:#f92672">,</span> <span style="color:#e6db74">&#34;mLastSrvView&#34;</span><span style="color:#75715e">/*huawei*/</span><span style="color:#f92672">};</span>
+</span></span><span style="display:flex;"><span>            Class clazz <span style="color:#f92672">=</span> inputMethodManager<span style="color:#f92672">.</span><span style="color:#a6e22e">getClass</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span>String fieldName <span style="color:#f92672">:</span> fieldNames<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    Field field <span style="color:#f92672">=</span> clazz<span style="color:#f92672">.</span><span style="color:#a6e22e">getDeclaredField</span><span style="color:#f92672">(</span>fieldName<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>field <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(!</span>field<span style="color:#f92672">.</span><span style="color:#a6e22e">isAccessible</span><span style="color:#f92672">())</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                            field<span style="color:#f92672">.</span><span style="color:#a6e22e">setAccessible</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>                        Object obj <span style="color:#f92672">=</span> field<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span>inputMethodManager<span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>obj <span style="color:#66d9ef">instanceof</span> View<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                            View view <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>View<span style="color:#f92672">)</span> obj<span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>view<span style="color:#f92672">.</span><span style="color:#a6e22e">getContext</span><span style="color:#f92672">()</span> <span style="color:#f92672">==</span> activity<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                                field<span style="color:#f92672">.</span><span style="color:#a6e22e">set</span><span style="color:#f92672">(</span>inputMethodManager<span style="color:#f92672">,</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>                            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>                        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>                    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Throwable t<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                    t<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h3 id="textline-leak"><code>TextLine</code> leak</h3>
+<p>An activity context may be referenced by <code>sCached</code> in <code>TextLine</code>, a simple solution is set every element of <code>sCached</code> to <code>null</code> in activity&rsquo;s <code>onDestroy</code> method.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> <span style="color:#66d9ef">static</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">fixTextLineLeak</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">try</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        Field field <span style="color:#f92672">=</span> Class<span style="color:#f92672">.</span><span style="color:#a6e22e">forName</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;android.text.TextLine&#34;</span><span style="color:#f92672">).</span><span style="color:#a6e22e">getDeclaredField</span><span style="color:#f92672">(</span><span style="color:#e6db74">&#34;sCached&#34;</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        field<span style="color:#f92672">.</span><span style="color:#a6e22e">setAccessible</span><span style="color:#f92672">(</span><span style="color:#66d9ef">true</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        Object<span style="color:#f92672">[]</span> sCached <span style="color:#f92672">=</span> <span style="color:#f92672">(</span>Object<span style="color:#f92672">[])</span> field<span style="color:#f92672">.</span><span style="color:#a6e22e">get</span><span style="color:#f92672">(</span><span style="color:#66d9ef">null</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>sCached <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#66d9ef">for</span> <span style="color:#f92672">(</span><span style="color:#66d9ef">int</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">0</span><span style="color:#f92672">;</span> i <span style="color:#f92672">&lt;</span> sCached<span style="color:#f92672">.</span><span style="color:#a6e22e">length</span><span style="color:#f92672">;</span> i<span style="color:#f92672">++)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>                sCached<span style="color:#f92672">[</span>i<span style="color:#f92672">]</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span> <span style="color:#66d9ef">catch</span> <span style="color:#f92672">(</span>Throwable t<span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>        t<span style="color:#f92672">.</span><span style="color:#a6e22e">printStackTrace</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><h2 id="leak-because-of-misuse">Leak because of misuse</h2>
+<h3 id="unremoved-viewtreeobserver-listener-leak">Unremoved <code>ViewTreeObserver</code> listener leak</h3>
+<p>The scenario is after create a new item view for a <code>ViewPager</code> by the <code>instantiateItem</code> method of <code>PageAdapter</code>, a listener reference to the item view indirectly have been add to the <code>ViewTreeObserver</code> of the item view, and the listener never be removed from the <code>ViewTreeObserver</code>, cause the item view leak even the view has been removed from the view hierarchy in the <code>destroyItem</code> method of <code>PageAdapter</code>.</p>
+<p><strong>Never forgot remove listeners from <code>ViewTreeObserver</code>.</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">final</span> ViewTreeObserver observer <span style="color:#f92672">=</span> view<span style="color:#f92672">.</span><span style="color:#a6e22e">getViewTreeObserver</span><span style="color:#f92672">();</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>observer <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	observer<span style="color:#f92672">.</span><span style="color:#a6e22e">addOnGlobalLayoutListener</span><span style="color:#f92672">(</span><span style="color:#66d9ef">new</span> ViewTreeObserver<span style="color:#f92672">.</span><span style="color:#a6e22e">OnGlobalLayoutListener</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>	    <span style="color:#a6e22e">@Override</span>
+</span></span><span style="display:flex;"><span>	    <span style="color:#66d9ef">public</span> <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">onGlobalLayout</span><span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>    	    <span style="color:#75715e">//do something
+</span></span></span><span style="display:flex;"><span><span style="color:#75715e"></span>			<span style="color:#66d9ef">if</span> <span style="color:#f92672">(</span>Build<span style="color:#f92672">.</span><span style="color:#a6e22e">VERSION</span><span style="color:#f92672">.</span><span style="color:#a6e22e">SDK_INT</span> <span style="color:#f92672">&gt;=</span> Build<span style="color:#f92672">.</span><span style="color:#a6e22e">VERSION_CODES</span><span style="color:#f92672">.</span><span style="color:#a6e22e">JELLY_BEAN</span><span style="color:#f92672">)</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>				observer<span style="color:#f92672">.</span><span style="color:#a6e22e">removeOnGlobalLayoutListener</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#f92672">}</span> <span style="color:#66d9ef">else</span> <span style="color:#f92672">{</span>
+</span></span><span style="display:flex;"><span>				observer<span style="color:#f92672">.</span><span style="color:#a6e22e">removeGlobalOnLayoutListener</span><span style="color:#f92672">(</span><span style="color:#66d9ef">this</span><span style="color:#f92672">);</span>
+</span></span><span style="display:flex;"><span>			<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>		<span style="color:#f92672">}</span>
+</span></span><span style="display:flex;"><span>	<span style="color:#f92672">});</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">}</span>
+</span></span></code></pre></div><ul class="pa0">
+  
+   <li class="list di">
+     <a href="/carina/tags/android/" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Android</a>
+   </li>
+  
+   <li class="list di">
+     <a href="/carina/tags/memory-leak/" class="link f5 grow no-underline br-pill ba ph3 pv2 mb2 dib black sans-serif">Memory leak</a>
+   </li>
+  
+</ul>
+<div class="mt6 instapaper_ignoref">
+      
+      
+      </div>
+    </div>
+
+    <aside class="w-30-l mt6-l">
+
+
+
+
+  <div class="bg-light-gray pa3 nested-list-reset nested-copy-line-height nested-links">
+    <p class="f5 b mb3">Related</p>
+    <ul class="pa0 list">
+	   
+	     <li  class="mb2">
+          <a href="/carina/note/android-command-line/">Android command line</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/carina/note/android-tips/">Android tips</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/carina/post/create-avd-and-start-app-with-command-line/">Create avd and start app with command line</a>
+        </li>
+	    
+	     <li  class="mb2">
+          <a href="/carina/post/vectordrawable-clip-path/">VectorDrawable clip path</a>
+        </li>
+	    
+    </ul>
+</div>
+
+</aside>
+
+  </article>
+
+    </main>
+    <footer class="bg-black bottom-0 w-100 pa3" role="contentinfo">
+  <div class="flex justify-between">
+  <a class="f4 fw4 hover-white no-underline white-70 dn dib-ns pv2 ph3" href="https://xjy2061.github.io/carina/" >
+    &copy;  Carina 2023 
+  </a>
+    <div>
+<div class="ananke-socials">
+  
+</div>
+</div>
+  </div>
+</footer>
+
+  </body>
+</html>
